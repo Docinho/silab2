@@ -33,8 +33,10 @@ public class AlbumController {
 	private ArtistaRepository artistaRepository;
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/usuarios/{id}/artistas/{idArtista}/album", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Album> criaAlbum(@RequestBody Album album, @PathVariable Long id, Long idArtista) {
+	public ResponseEntity<Album> criaAlbum(@RequestBody Album album, @PathVariable Long id, @PathVariable Long idArtista) {
 		//ajeitar a musica com artista no front
+		Artista artista = artistaRepository.findOne(idArtista); 
+		album.setArtista(artista);
 		Album albumCadastrado = albumRepository.save(album);
 		return new ResponseEntity<Album>(albumCadastrado, HttpStatus.OK);
 	}
@@ -43,7 +45,7 @@ public class AlbumController {
 	public ResponseEntity<Collection<Album>> colecaoAlbunsArtista(@PathVariable Long idArtista) {
 		//ajeitar a musica com artista no front
 		Artista artista = artistaRepository.findOne(idArtista);
-		Collection<Album> albuns = (Collection<Album>) artista.getAlbuns();
+		Collection<Album> albuns = artista.getAlbuns();
 		return new ResponseEntity<Collection<Album>>(albuns, HttpStatus.OK);
 	}
 	

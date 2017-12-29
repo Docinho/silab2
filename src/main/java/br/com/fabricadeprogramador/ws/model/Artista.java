@@ -1,16 +1,20 @@
 package br.com.fabricadeprogramador.ws.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Artista implements Serializable {
@@ -31,6 +35,10 @@ public class Artista implements Serializable {
 	@JoinColumn(name="Usuario_id")
 	private Usuario usuario;
 	
+	@JsonManagedReference
+	@OneToMany(mappedBy = "artista")
+	private List<Album> albuns;
+	
 	public Artista() {}
 	
 	
@@ -40,7 +48,7 @@ public class Artista implements Serializable {
 
 
 	public void setUsuario(Usuario usuario) {
-		this.usuario = null;
+		this.usuario = usuario;
 	}
 
 
@@ -83,8 +91,7 @@ public class Artista implements Serializable {
 
 
 	public Collection<Album> getAlbuns() {
-		// TODO Auto-generated method stub
-		return null;
+		return albuns;
 	}
 
 	
