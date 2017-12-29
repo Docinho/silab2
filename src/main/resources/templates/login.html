@@ -1,36 +1,48 @@
 <!DOCTYPE html>
-<html lang="pt-br" ng-app="sistema">
-<head>
-  <meta charset="UTF-8"/>
-  <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
-<script src="./js/angular.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
-<script src="./js/angular-route.min.js"></script>
-<script src="./js/angular-ui-router.js"></script>
-<script src="./js/init.js"> </script>
-<script src="./js/app/app.js"></script>
-<script src="./js/app/controllers.js"></script>
-  	<title>Login</title>
-  	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"/>
-	<link rel="stylesheet" href="./css/loginstyle.css"/>
- 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+<html ng-app="modulo1">
+  <head>
+    <meta charset="utf-8"/>
+    <title> Login</title>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Musica lab1</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/estilo.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Milonga" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Mate+SC" rel="stylesheet"/>
+    <!-- SCRIPTS/LIBRARIES -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="js/app/app.js"></script>
+    <script src="js/app/controllers.js"></script>
+    <!-- <script type="text/javascript" src="https://code.jquery.com/angular-route.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="js/init.js"></script>
+    <!-- star rating -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  </head>
 
-</head>
 
-<body ng-controller="controlePrincipal">
+  <body ng-controller="indexController">
 
-  <div class="login">
-	<h1>Faça seu Login</h1>
+    <div class="loginLivia">
+  	  <h3>BEM VINDO</h3>
 
-    <form method="post">
-    	<input type="text" ng-model="Usuario.email" name="u" placeholder="Email" required="required"  />
-        <input type="password" ng-model="Usuario.senha" name="p" placeholder="Senha" required="required" />
-        <button type="submit" class="btn btn-primary btn-block btn-large" ng-click="fazerLogin(Usuario)">Entrar</button>
+      <form method="post">
+      	<input type="text" ng-model="Usuario.email" name="u" placeholder="Email" required="required"  />
+          <input type="password" ng-model="Usuario.senha" name="p" placeholder="Senha" required="required" />
+          <button type="submit" class="btn btn-primary btn-block btn-large" ng-click="fazerLogin(Usuario)">Entrar</button>
 
-    </form>
-    
-    <button onclick="window.location.href='/registrar'" class="btn btn-primary btn-block btn-large">Registrar</button>
-</div>
+      </form>
+      <br/>
+      <div class="botaoRegistra">
+        <button onclick="window.location.href='/registrar'" class="btn btn-primary btn-block btn-large">Registrar</button>
+      </div>
+    </div>
 
-</body>
+  </body>
 </html>
