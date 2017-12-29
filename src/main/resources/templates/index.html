@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html ng-app = "modulo1">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Musica lab1</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" type="text/css" href="css/estilo.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Milonga" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Mate+SC" rel="stylesheet"/>
+    <!-- SCRIPTS/LIBRARIES -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="js/app/app.js"></script>
+    <script src="js/app/controllers.js"></script>
+    <!-- <script type="text/javascript" src="https://code.jquery.com/angular-route.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="js/init.js"></script>
+    <!-- star rating -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  </head>
+
+  <body ng-controller="indexController">
+
+        <header>
+            <div class="titulo">
+            <h2><bold>MÚSICA</bold></h2> <!--mostra a informação quando ela estiver carregada não aparecendo "{{titulo}}" no delay, por exemplo  -->
+            </div>
+
+        </header>
+
+        <main class="container">
+            {{usuariosCadastrados}}
+            <div>
+                <div>
+                    <h6>Digite o nome do artista</h6>
+                    <input type="text" name="" ng-modeL="procurado.nome_artista"/>
+                </div>
+                
+                <div class="tabela">
+                    <table class="bordered">
+                        <thead>
+                            <tr>
+                                <th>Foto do Artista</th>
+                                <th>Nome</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr ng-repeat="artista in listaArtista  | filter: procurado">
+                                <td><img src="{{artista.imagem_artista}}" alt="" ng-click="modalDestalhesArtista(artista)"/></td>
+                                <td> {{artista.nome_artista}}</td>
+                                <td>
+                                <img ng-if="!artista.favorito" ng-click="favoritaArtista(artista)" src="img/heart.png" class="favoritos" height="10" width="10"/>
+                                <img ng-if = "artista.favorito" ng-click = "desfavoritaArtista(artista)" src="img/fav_heart.png" class = "favoritos"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a ng-click="modalAdicionarArtista()" id="botoes" class="waves-effect waves-light btn black" href="#modalAdicionarArtista">+artista</a>
+                </div>
+            </div>
+
+
+
+            <h6>Digite o nome da playlist</h6>
+            <input type="text" name="" ng-modeL="procurado.nome_playlist"/>
+            <div class="tabela">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome da playlist</th>
+                            <th>Músicas</th>
+                            <th>Duração</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat = "playlist in listaPlaylists | filter: playlistProcurada">
+                            <td ng-click = "modalDetalhesPlaylist(playlist)">{{playlist.nome_playlist}}</td>
+                            <td>{{playlist.num_musicas_playlist}}</td>
+                            <td>{{playlist.duracao_playlist}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a ng-click="modalAdicionaPlaylist()" id="botoes" class="waves-effect waves-light btn black" href="#modalAdicionarPlaylist">+playlist</a>
+
+            </div>
+
+
+        </main>
+
+        <!-- Modal Trigger // modal com os detalhes do artista-->
+        <!-- <a class="waves-effect waves-light btn modal-trigger" href="#modalDestalhesArtista">Modal</a> -->
+        <div id="modalDestalhesArtista" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <img src="{{artistaDaVez.imagem_artista}}" class="circle" height="30" width="30" alt=""/>
+                <h4>{{artistaDaVez.nome_artista}}</h4>  <h5>Nota: {{artistaDaVez.nota}}</h5>
+                <h5>Última música ouvida: {{artistaDaVez.ultimaMusica}}</h5>
+                <div class="row s10">
+                    <table class="bordered">
+                        <tbody>
+                            <tr ng-repeat="album in listaAlbunsArtista">
+                                <td><img class = "circle" src="{{album.imagem}}" alt="Imagem não existe" width="20" height="20"/></td>
+                                <td ng-click = "modalListaMusica(album)">{{album.nome}}</td>
+                                <td>{{album.ano}}</td>
+                                <td><a ng-click="modalAdicionarMusica(album)" class="btn-floating btn-large waves-effect waves-light purple"><i class="material-icons">add</i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        
+            <div class="modal-footer">
+                <!-- Avalia artista -->
+                <a class='dropdown-button btn purple' data-activates='dropdown1'>Avalie o Artista!</a>
+                <ul id='dropdown1' class='dropdown-content'>
+                    <li><a ng-click = "avaliaArtista(1)" href="#!">1</a></li>
+                    <li><a ng-click = "avaliaArtista(2)" href="#!">2</a></li>
+                    <li><a ng-click = "avaliaArtista(3)" href="#!">3</a></li>
+                    <li><a ng-click = "avaliaArtista(4)" href="#!">4</a></li>
+                    <li><a ng-click = "avaliaArtista(5)" href="#!">5</a></li>
+                </ul>
+
+                <a class='dropdown-button btn purple' data-activates='dropdown2'>Ultima música ouvida</a>
+                <ul id='dropdown2' class='dropdown-content'>
+                    <li ng-repeat="musicas in musicasArtistaListadas"><a ng-click = "setUltimaMusicaOuvida(musicas)">{{musicas.nome_musica}}</a></li>
+                </ul>
+
+
+                <a ng-click="modalAdicionaAlbum()" class="waves-effect waves-light btn modal-trigger purple adicionaAlbum">Add Album</a>
+                <a ng-click = "listaAlbunsReset()" href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Fechar</a>
+            </div>
+        </div>
+
+        <div id="modalDetalhesPlaylist" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h4>{{playlistDaVez.nome_playlist}}</h4>
+                <input type="text" name="" ng-modeL="musicaProcurada" placeholder="Digite o nome da música"/>
+                <div class="row">
+                    <table class="bordered">
+                        <tbody>
+                            <tr ng-repeat="musica in playlistDaVez.musicas | filter: musicaProcurada">
+                                <td>{{musica.nome_musica}}</td>
+                                <td><a ng-click="excluirMusica(musica)" class="btn-floating btn-large waves-effect waves-light purple"><i class="material-icons">cancel</i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a ng-click="modalListaMusica()" class="waves-effect waves-light btn modal-trigger purple adicionaAlbum">add musica</a>
+                <a ng-click="excluirPlaylist()" class="waves-effect waves-light btn modal-trigger purple adicionaAlbum">excluir</a>
+                <a ng-click = "resetPlaylistDaVez()" href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Fechar</a>
+            </div>
+        </div>
+
+
+        <!-- Modal Structure -->
+
+        <!--Organização do formulário // adiciona artista-->
+        <!-- Modal Structure -->
+        <div class="row">
+            <!-- Modal Trigger -->
+            <div id="modaldoartista" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h4>Adicione o artista</h4>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="nome_artista" ng-model="Artista.nome_artista" type="text" class="validate"/>
+                            <label for="nome_artista">Nome do artista</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <input id="imagem_artista" ng-model="Artista.imagem_artista" type="text" class="validate"/>
+                            <label for="imagem_artista">Imagem do artista</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a ng-click="adicionaArtista(Artista)" href="#botao-adicionar" class="modal-action modal-close waves-effect waves-green btn-flat purple">Adicionar</a>
+                    <a ng-click="resetArtista()" href="#botao-cancelar" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Modal Trigger -->
+            <div id="adiciona-playlist" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h4>Crie sua Playlist!</h4>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="nome_playlist" ng-model="Playlist.nome_playlist" type="text" class="validate"/>
+                            <label for="nome_playlist">Nome da playlist</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a ng-click="adicionaPlaylist(Playlist)" href="#botao-adicionar" class="modal-action modal-close waves-effect waves-green btn-flat purple">Criar</a>
+                    <a ng-click="resetPlaylist()" href="#botao-cancelar" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+                </div>
+            </div>
+        </div>
+
+        <!--Organização do formulário // adicionaAlbum-->
+        <div class="row">
+            <div id="cadastro-album" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h4>Adicione o Álbum</h4>
+                    <div class="row">
+                        <div class="input-field col s5">
+                            <a>Nome do Album</a>
+                            <input id="nome_album" ng-model="Album.nome" type="text" class="validate"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s8">
+                            <a>Imagem do album</a>
+                            <input id="imagem_album" ng-model="Album.imagem" type="text" class="validate"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <a>Ano de lançamento do album</a>
+                            <input id="ano_album" ng-model="Album.ano" type="text" class="validate"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <a ng-click="adicionaAlbum(Album)" href="#botao-adicionar" class="modal-action modal-close waves-effect waves-green btn-flat purple">Adicionar</a>
+                    <a ng-click="resetAlbum()" href="#botao-cancelar" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Modal Trigger -->
+            <div id="cadastro-musica" class="modal modal-fixed-footer">
+                
+                <div class="modal-content">
+                    
+                    <h4>Adicione música</h4>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input id="nome_artista" ng-model="Musica.nome_artista" type="text" class="validate" disabled="disabled"/>
+                            <label for="nome_artista">{{albumDaVez.nome_artista}}</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input id="nome_album" ng-model="Musica.nome_album" type="text" class="validate" disabled="disabled"/>
+                            <label for="nome_album">{{albumDaVez.nome}}</label>
+                        </div>
+
+                        <div class="input-field col s10">
+                            <input id="nome_musica" ng-model="Musica.nome_musica" type="text" class="validate"/>
+                            <label for="nome_musica">Nome da Música</label>
+                        </div>
+                        <div class="input-field col s10">
+                            <input id="ano_musica" ng-model="Musica.ano_musica" type="text" class="validate" disabled="disabled"/>
+                            <label for="ano_musica">{{albumDaVez.ano}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <input id="duracao_musica" ng-model="Musica.duracao_musica" type="text" class="validate"/>
+                            <label for="duracao_musica">Duração da Música</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <a ng-click="adicionaMusica(Musica)"  class="modal-action modal-close waves-effect waves-green btn-flat purple">Adiciona Musica</a>
+                    <a ng-click="resetAddMusica()" href="#botao-cancelar" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalListaMusica" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h4>{{albumDaVez.nome}}</h4>
+                <div class="row">
+                    <input type="text" name="" ng-modeL="musicaProcurada" placeholder="Digite o nome da música"/>
+                    <table class="bordered">
+                        <tbody>
+                            <tr ng-repeat="musica in listaMusicas | filter: musicaProcurada">
+                                <td>{{musica.nome_musica}}</td>
+                                <td>{{musica.nome_artista}}</td>
+                                <td>{{musica.nome_album}}</td>
+                                <td><a ng-click="addMusicaAPlaylist(musica)" class="btn-floating btn-large waves-effect waves-light purple"><i class="material-icons">add</i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="add-musica-playlist" class="modal modal-fixed-footer">
+                    <div class="modal-content">
+                        <h4>Adicionar a Playlist</h4>
+                        <div class="row">
+                            <table class="bordered">
+                                <tbody>
+                                    <tr ng-repeat="playlist in listaPlaylists">
+                                    <td ng-click = "addMusicaAPlaylist(playlist)">{{playlist.nome_playlist}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>    
+            
+            <div class="modal-footer">
+                <a ng-click="modalAdicionaAlbum()" class="waves-effect waves-light btn modal-trigger purple adicionaAlbum">Add Album</a>
+                <a ng-click = "listaAlbunsReset()" href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+            </div>
+        </div>
+    
+        <!-- excluirArtista -->
+        <div id="modal1" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h4>Excluir artista</h4>
+                <p>Deseja realmente excluir {{artista.nome_artista}}?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">CANCELAR</a>
+                <a href="#!" ng-click="excluirArtista(artista)" class="modal-action modal-close waves-effect waves-green btn-flat ">EXCLUIR</a>
+            </div>
+        </div>
+
+  </body>
+</html>

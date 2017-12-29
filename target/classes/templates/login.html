@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="modulo1">
+  <head>
+    <meta charset="utf-8"/>
+    <title> Login</title>
+    <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
+     <?php  header("Access-Control-Allow-Origin: *"); ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Musica lab1</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" type="text/css" href="css/estilo.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Milonga" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Mate+SC" rel="stylesheet"/>
+    <!-- SCRIPTS/LIBRARIES -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="js/app/app.js"></script>
+    <script src="js/app/controllers.js"></script>
+    <!-- <script type="text/javascript" src="https://code.jquery.com/angular-route.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="js/init.js"></script>
+    <!-- star rating -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  </head>
+
+
+  <body ng-controller="indexController">
+
+    <div class="login">
+  	<h1>COLOCA OUTRA COISA AKI</h1>
+
+      <form method="post">
+      	<input type="text" ng-model="Usuario.email" name="u" placeholder="Email" required="required"  />
+          <input type="password" ng-model="Usuario.senha" name="p" placeholder="Senha" required="required" />
+          <button type="submit" class="btn btn-primary btn-block btn-large" ng-click="fazerLogin(Usuario)">Entrar</button>
+
+      </form>
+      <br/>
+      <button onclick="window.location.href='/registrar'" class="btn btn-primary btn-block btn-large">Registrar</button>
+  </div>
+
+  </body>
+</html>
