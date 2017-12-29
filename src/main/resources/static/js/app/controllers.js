@@ -78,6 +78,8 @@ angular.module("modulo1")
             return naoExiste;
           }
        
+         ///// Artista ////
+          
         $scope.setUltimaMusicaOuvida = function(Musica) {
           $scope.artistaDaVez.ultimaMusica = Musica.nome_musica;
         }
@@ -218,7 +220,7 @@ angular.module("modulo1")
 
         $scope.modalListaMusica = function(Album) {
           $scope.albumDaVez = Album;
-          $scope.Musica = {nome_musica:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracao_musica:""};
+          $scope.Musica = {nome:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracao_musica:""};
           $('#modalListaMusica').modal('open');
         }
 
@@ -342,7 +344,7 @@ angular.module("modulo1")
         }
 
         $scope.resetArtistaDaVez = function(){
-          $scope.artistaDaVez = {nome_artista: "", imagem_artista: "", albuns: [], favorito: false, ultimaMusica:""}
+          $scope.artistaDaVez = {nome_artista: "", imagem_artista: "", albuns: [], ehFavorito: false, ultimaMusica:""}
         }
         $scope.resetAlbumDaVez = function(){
             $scope.albumDaVez = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
@@ -362,7 +364,7 @@ angular.module("modulo1")
           var i = 0;
           while(i < $scope.listaArtista.length) {
             if($scope.listaFavoritos[i].nome_artista == Artista.nome_artista) {
-              $scope.listaFavoritos[i].favorito = false;
+              $scope.listaFavoritos[i].ehFavorito = false;
               $scope.listaFavoritos.splice(i, 1);
             }
             i++;
@@ -372,7 +374,7 @@ angular.module("modulo1")
         }
 
         $scope.favoritaArtista = function(Artista) {
-          Artista.favorito =true;
+          Artista.ehFavorito =true;
           $scope.listaFavoritos.push(Artista);
         }
 
