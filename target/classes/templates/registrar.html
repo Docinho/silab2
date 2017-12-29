@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="sistema">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Access-Control-Allow-Origin" content="*"/>
+<script src="./js/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
+<script src="./js/angular-route.min.js"></script>
+<script src="./js/angular-ui-router.js"></script>
+<script src="./js/init.js"> </script>
+<script src="./js/app/app.js"></script>
+<script src="./js/app/controllers.js"></script>
+  	<title>Login</title>
+  	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"/>
+	<link rel="stylesheet" href="./css/loginstyle.css"/>
+ 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
+</head>
+
+<body ng-controller="controlePrincipal">
+  <div class="login">
+	<h1>Faça seu Cadastro!</h1>
+
+    <form method="post">
+        <input type="text" ng-model="Usuario.login" name="u" placeholder="Escolha um Login" required="required"  />
+    	<input type="email" ng-model="Usuario.email" name="e" placeholder="Escolha seu email" required="required"  />
+        <input type="password" ng-model="Usuario.senha" name="p" placeholder="Escolha sua senha" required="required" />
+        <button type="submit" class="btn btn-primary btn-block btn-large" ng-click="registrar(Usuario)">Registrar-se</button>
+
+    </form>
+    
+    <button onclick="window.location.href='/login'" class="btn btn-primary btn-block btn-large">Voltar</button>
+</div>
+
+</body>
+</html>
