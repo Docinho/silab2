@@ -22,6 +22,7 @@ public class Usuario {
 	private String nome;
 	private String email;
 	private String senha;
+
 	
 	
 	@JsonManagedReference
@@ -44,8 +45,6 @@ public class Usuario {
 	public void setArtistas(List<Artista> artistas) {
 		this.artistas = artistas;
 	}
-
-
 
 	public Long getId() {
 		return id;
@@ -72,15 +71,4 @@ public class Usuario {
 		this.senha = senha;
 	}
 	
-	public List<Artista> getMusicas() {
-		return null;
-	}
-
-
-
-	public Collection<Album> getAlbuns() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	}
+}

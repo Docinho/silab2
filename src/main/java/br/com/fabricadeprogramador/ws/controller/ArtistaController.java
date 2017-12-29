@@ -1,6 +1,8 @@
 package br.com.fabricadeprogramador.ws.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.servlet.ServletException;
 
@@ -46,6 +48,7 @@ public class ArtistaController {
 		Collection<Artista> listaArtistas = (Collection<Artista>) usuario.getArtistas();
 		return new ResponseEntity<Collection<Artista>>(listaArtistas, HttpStatus.OK);
 	}
+	
 	
 	//(des)favorita, avalia, ultima musica
 	@RequestMapping(method = RequestMethod.PUT, value = "/usuarios/{id}/artistas", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

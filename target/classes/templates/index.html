@@ -35,7 +35,7 @@
         </header>
 
         <main class="container">
-            {{usuariosCadastrados}}
+            {{user}}
             <div>
                 <div>
                     <h6>Digite o nome do artista</h6>
@@ -52,12 +52,12 @@
                         </thead>
 
                         <tbody>
-                            <tr ng-repeat="artista in listaArtista  | filter: procurado">
-                                <td><img src="{{artista.imagem_artista}}" alt="" ng-click="modalDestalhesArtista(artista)"/></td>
-                                <td> {{artista.nome_artista}}</td>
+                            <tr ng-repeat="artista in user.artistas  | filter: procurado">
+                                <td><img src="{{artista.imagem}}" alt="" ng-click="modalDestalhesArtista(artista)"/></td>
+                                <td> {{artista.nome}}</td>
                                 <td>
-                                <img ng-if="!artista.favorito" ng-click="favoritaArtista(artista)" src="img/heart.png" class="favoritos" height="10" width="10"/>
-                                <img ng-if = "artista.favorito" ng-click = "desfavoritaArtista(artista)" src="img/fav_heart.png" class = "favoritos"/>
+                                <img ng-if="!artista.ehFavorito" ng-click="favoritaArtista(artista)" src="img/heart.png" class="favoritos" height="10" width="10"/>
+                                <img ng-if = "artista.ehFavorito" ng-click = "desfavoritaArtista(artista)" src="img/fav_heart.png" class = "favoritos"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -151,7 +151,6 @@
                         </tbody>
                     </table>
                 </div>
-
             </div>
             <div class="modal-footer">
                 <a ng-click="modalListaMusica()" class="waves-effect waves-light btn modal-trigger purple adicionaAlbum">add musica</a>
@@ -172,15 +171,15 @@
                     <h4>Adicione o artista</h4>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="nome_artista" ng-model="Artista.nome_artista" type="text" class="validate"/>
-                            <label for="nome_artista">Nome do artista</label>
+                            <input id="nome" ng-model="Artista.nome" type="text" class="validate"/>
+                            <label for="nome">Nome do artista</label>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="input-field col s10">
-                            <input id="imagem_artista" ng-model="Artista.imagem_artista" type="text" class="validate"/>
-                            <label for="imagem_artista">Imagem do artista</label>
+                            <input id="imagem" ng-model="Artista.imagem" type="text" class="validate"/>
+                            <label for="imagem">Imagem do artista</label>
                         </div>
                     </div>
                 </div>

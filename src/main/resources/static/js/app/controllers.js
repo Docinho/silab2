@@ -4,8 +4,8 @@ angular.module("modulo1")
         $scope.titulo = "Sistema de Musica";
         $scope.listaArtista = [{nome_artista: "Liam Gallagher", imagem_artista: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4IxDsRit-p3i4rrALx0gYh2Fr6rSdYeOWkV-xHDW369VeWYBk1g",
         albuns:[], favorito: false, nota:0}];
-        $scope.Artista = {nome_artista: "", imagem_artista: "", albuns: [], favorito: false, nota:0, ultimaMusica:""};
-        $scope.Musica = {nome_musica:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracao_musica:""};
+        $scope.Artista = {nome: "", imagem: "", albuns: [], ehFavorito: false, nota:0, ultimaMusica:""};
+        $scope.Musica = {nome:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracaoMusica:""};
         $scope.Album = {nome_artista: "", nome:"", imagem: "", ano:"", musicas: []}
         $scope.Playlist = {nome_playlist:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
         $scope.artistaDaVez = {nome_artista: "", imagem_artista: "", albuns: [], favorito: false, nota:0, ultimaMusica:""};
@@ -20,45 +20,34 @@ angular.module("modulo1")
         $scope.musicasArtistaListadas = [];
         $scope.usuariosCadastrados  = [];
         $scope.user = JSON.parse(localStorage.getItem("userInfo"));
-
-
+        
+        
+        
         //carrega a lista de usuarios cadastrados
         $http({method:'GET', url:'http://localhost:8080/usuarios'})
           .then(function(resposta){
             $scope.usuariosCadastrados = resposta.data;
-            console.log("Fez corretamente o GET");
+            console.log("Fez corretamente o GET", $scope.usuariosCadastrados, $scope.user);
 
           }, function(resposta){
             console.log(resposta.status);
           });
 
         $scope.fazerLogin = function(Usuario) {
-        	var logou = false;
-            for(i = 0; i < $scope.usuariosCadastrados.length; i++) {
-              if($scope.usuariosCadastrados[i].email == Usuario.email){
-                if($scope.usuariosCadastrados[i].senha == Usuario.senha) {
-                  localStorage.setItem("userInfo", JSON.stringify(Usuario));
-                  console.log("Logou");
-                  logou = true;
-                  window.location.href = "http://www.localhost:8080/index";
-
-                  break;
-                }
-              }
-            }
-            
-            if(logou == false ) {
-            	alert("Email ou senha incorretos!");
-            }
+			$http.post("http://localhost:8080/autenticar", Usuario)
+			.then(function (resposta){
+				console.log("Logou corretamente" + resposta);
+				Usuario.id = resposta.data.id;
+				Usuario.artistas = resposta.data.artistas;
+				localStorage.setItem("userInfo", JSON.stringify(resposta.data));
+				window.location.href = "http://localhost:8080/index";
+				
+				
+			}, function(resposta){
+				console.log("Falha " + resposta);
+				
+			});
           }
-
-          //duvida
-//        $http({method:'PUT', url:'http://localhost:8080/usuarios'})
-//          .then(function(resposta) {
-//            console.log("Fez corretamente o PUT");
-//          }, function(resposta) {
-//            console.log(resposta.status);
-//          });
 
           $scope.registrar = function(Usuario) {
             if(naoExisteUsuario(Usuario)){
@@ -80,24 +69,49 @@ angular.module("modulo1")
           var naoExisteUsuario = function(Usuario) {
             naoExiste = true;
             for (let usuario = 0; usuario < $scope.usuariosCadastrados.length; usuario++) {
-              if(usuariosCadastrados[usuario].email == Usuario.email){
-                if(usuariosCadastrados[usuario].senha == Usuario.senha) {
+              if($scope.usuariosCadastrados[usuario].email == Usuario.email){
+                if($scope.usuariosCadastrados[usuario].senha == Usuario.senha) {
                   naoExiste = false;
                 }
               }
             }
             return naoExiste;
           }
+       
         $scope.setUltimaMusicaOuvida = function(Musica) {
           $scope.artistaDaVez.ultimaMusica = Musica.nome_musica;
         }
 
         $scope.adicionaArtista = function(Artista) {
-          if (checaArtista(Artista)) {
-            $scope.listaArtista.push(Artista);
-          };
-          $scope.Artista = [{nome_artista: "", imagem_artista: "", albuns: [], favorito: false, nota:0, ultimaMusica:""}];
-        };
+        	if(Artista.nome == "") {
+        		Materialize.toast("Informações incorretas!", 2000);
+        	} else {
+        		if(!existeArtista(Artista.nome, $scope.user.artistas)) {
+				
+						
+						$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+						.then(function (resposta){
+							console.log("Cadastrou o artista com sucesso " + resposta);
+							Artista.id = resposta.data.id;
+							console.log(Artista);
+							console.log($scope.user.artistas);
+							$scope.user.artistas.push(Artista);
+							$('#modaldoartista').modal('close');
+							$scope.Artista = {nome:"", imagem:"", nota:0, ehFavorito:false, ultimaMusica:""};
+							
+						}, function(resposta){
+							console.log("Falha " + resposta);
+						});
+
+
+        		} else {
+        			Materialize.toast("O artista já existe, tente cadastrar outro!", 2000);
+        			$scope.Artista = {nome:"", imagem:"", nota:0, ehFavorito:false, ultimaMusica:""};
+        		}
+      
+        	}
+        }
+         
 
 
         $scope.atualizaArtista = function(Artista) {
@@ -109,13 +123,15 @@ angular.module("modulo1")
 
         var existeArtista = function(nomeArtista, lista) {
           var artista = false;
-          var artistaNaLista = 0;
-          while (!artista && artistaNaLista < lista.length) {
-            if(lista[artistaNaLista].nome_artista == nomeArtista){
-              artista = true;
-            };
-            artistaNaLista++;
-          };
+          if(lista != null) {
+	          var artistaNaLista = 0;
+	          while (!artista && artistaNaLista < lista.length) {
+	            if(lista[artistaNaLista].nome == nomeArtista){
+	              artista = true;
+	            };
+	            artistaNaLista++;
+	          };
+          }
           return artista;
         };
 
@@ -142,8 +158,8 @@ angular.module("modulo1")
         }
 
         var checaArtista = function(Artista) {
-          if(!nomeVazio(Artista.nome_artista)) {
-            if(!existeArtista(Artista.nome_artista, $scope.listaArtista)){
+          if(!nomeVazio(Artista.nome)) {
+            if(!existeArtista(Artista.nome, $scope.user.artistas)){
               return true;
             }else {
                Materialize.toast('Artista já existente!', 3000);

@@ -35,9 +35,9 @@ public class Artista implements Serializable {
 	@JoinColumn(name="Usuario_id")
 	private Usuario usuario;
 	
-	@JsonManagedReference
-	@OneToMany(mappedBy = "artista")
-	private List<Album> albuns;
+//	@JsonManagedReference
+//	@OneToMany(mappedBy = "artista")
+//	private List<Album> albuns;
 	
 	public Artista() {}
 	
@@ -88,9 +88,9 @@ public class Artista implements Serializable {
 	}
 
 
-	public Collection<Album> getAlbuns() {
-		return albuns;
-	}
+//	public Collection<Album> getAlbuns() {
+//		return albuns;
+//	}
 
 	
 }
