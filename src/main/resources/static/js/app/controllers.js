@@ -384,6 +384,14 @@ angular.module("modulo1")
 
         $scope.avaliaArtista = function(Nota) {
           $scope.artistaDaVez.nota = Nota;
+          Artista = $scope.artistaDaVez;
+          
+          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+          .then(function(resposta) {
+        	  console.log("Artista avaliado: ", resposta.data);
+          }, function(resposta) {
+        	  console.log("Erro ", resposta);
+          })
         }
 
         $scope.adicionaPlaylist = function(Playlist) {
