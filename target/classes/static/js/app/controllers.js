@@ -22,7 +22,7 @@ angular.module("modulo1")
         $scope.user = JSON.parse(localStorage.getItem("userInfo"));
 
 
-        //Usuario
+        //carrega a lista de usuarios cadastrados
         $http({method:'GET', url:'http://localhost:8080/usuarios'})
           .then(function(resposta){
             $scope.usuariosCadastrados = resposta.data;
@@ -33,37 +33,53 @@ angular.module("modulo1")
           });
 
         $scope.fazerLogin = function(Usuario) {
+        	var logou = false;
             for(i = 0; i < $scope.usuariosCadastrados.length; i++) {
               if($scope.usuariosCadastrados[i].email == Usuario.email){
                 if($scope.usuariosCadastrados[i].senha == Usuario.senha) {
                   localStorage.setItem("userInfo", JSON.stringify(Usuario));
                   console.log("Logou");
+                  logou = true;
                   window.location.href = "http://www.localhost:8080/index";
 
                   break;
                 }
               }
             }
+            
+            if(logou == false ) {
+            	alert("Email ou senha incorretos!");
+            }
           }
 
           //duvida
-        $http({method:'PUT', url:'http://localhost:8080/usuarios'})
-          .then(function(resposta) {
-            console.log("Fez corretamente o PUT");
-          }, function(resposta) {
-            console.log(resposta.status);
-          });
+//        $http({method:'PUT', url:'http://localhost:8080/usuarios'})
+//          .then(function(resposta) {
+//            console.log("Fez corretamente o PUT");
+//          }, function(resposta) {
+//            console.log(resposta.status);
+//          });
 
-          $scope.registraUsuario = funtion(Usuario) {
+          $scope.registrar = function(Usuario) {
             if(naoExisteUsuario(Usuario)){
-              usuariosCadastrados.push(Usuario);
-              window.location.href = "http://www.localhost:8080/login";
+				$http.post("http://localhost:8080/usuarios", Usuario)
+				.then(function (resposta){
+					console.log("Registrou" + resposta);
+					alert("Registro feito com sucesso! Use seu email e senha para logar!");
+					window.location.href = "http://localhost:8080/login";
+					
+					
+				}, function(resposta){
+					console.log("Falha " + resposta);
+					
+				});
+            	
             }
           };
 
           var naoExisteUsuario = function(Usuario) {
             naoExiste = true;
-            for (let usuario = 0; usuario < usuariosCadastrados.length; usuario++) {
+            for (let usuario = 0; usuario < $scope.usuariosCadastrados.length; usuario++) {
               if(usuariosCadastrados[usuario].email == Usuario.email){
                 if(usuariosCadastrados[usuario].senha == Usuario.senha) {
                   naoExiste = false;

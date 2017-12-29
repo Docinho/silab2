@@ -16,6 +16,10 @@ public class PageController {
 	public String irParaIndex() {
 		return "index";
 	}
+	@RequestMapping("/registro")
+	public String irParaRegistro() {
+		return "registro";
+	}
 	
 
 }

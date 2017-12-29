@@ -29,19 +29,23 @@
 
   <body ng-controller="indexController">
 
-    <div class="loginLivia">
-  	  <h3>BEM VINDO</h3>
+    <div class="registroLivia">
+  	  <h3>Registre-se</h3>
 
       <form method="post">
+      <p>Insira seu nome</p>
+      <input type="text" ng-model="Usuario.nome" name="u" placeholder="Nome" required="required"  />
+       <p>Insira seu email</p>
       	<input type="text" ng-model="Usuario.email" name="u" placeholder="Email" required="required"  />
+      	 <p>Insira sua senha</p>
           <input type="password" ng-model="Usuario.senha" name="p" placeholder="Senha" required="required" />
-          <button type="submit" class="btn btn-primary btn-block btn-large" ng-click="fazerLogin(Usuario)">Entrar</button>
+          <button type="submit" class="btn btn-primary btn-block btn-large" ng-click="registrar(Usuario)">Registrar</button>
+          <br/>
+           <button onclick="window.location.href='/login'" class="btn btn-primary btn-block btn-large">Voltar</button>
 
       </form>
       <br/>
-      <div class="botaoRegistra">
-        <button onclick="window.location.href='/registro'" class="btn btn-primary btn-block btn-large">Registrar</button>
-      </div>
+
     </div>
 
   </body>
