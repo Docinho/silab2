@@ -361,21 +361,25 @@ angular.module("modulo1")
         $scope.desfavoritaArtista = function(Artista) {
           var click = confirm("Excluir o artista " + Artista.nome_artista + " da lista de favoritos?");
           if(click){
-          var i = 0;
-          while(i < $scope.listaArtista.length) {
-            if($scope.listaFavoritos[i].nome_artista == Artista.nome_artista) {
-              $scope.listaFavoritos[i].ehFavorito = false;
-              $scope.listaFavoritos.splice(i, 1);
-            }
-            i++;
+              Artista.ehFavorito = false;
+	          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+	          .then(function(resposta) {
+	        	  console.log("Artista desfavoritado: ", resposta.data);
+	          }, function(resposta) {
+	        	  console.log("Erro ", resposta);
+	          })
           }
-        }
 
         }
 
         $scope.favoritaArtista = function(Artista) {
           Artista.ehFavorito =true;
-          $scope.listaFavoritos.push(Artista);
+          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+          .then(function(resposta) {
+        	  console.log("Artista favoritado: ", resposta.data);
+          }, function(resposta) {
+        	  console.log("Erro ", resposta);
+          })
         }
 
         $scope.avaliaArtista = function(Nota) {
