@@ -23,6 +23,7 @@ public class Album implements Serializable{
 	@GeneratedValue
 	private Long id;
 	private String nome;
+	private String imagem;
 //	private List<Musica> colecaoMusicas;
 	private String ano;
 	@JsonBackReference
@@ -31,6 +32,24 @@ public class Album implements Serializable{
 	private Artista artista;
 
 	
+	public Artista getArtista() {
+		return artista;
+	}
+	
+
+	
+	public String getImagem() {
+		return imagem;
+	}
+
+
+
+	public void setImagem(String imagem) {
+		this.imagem = imagem;
+	}
+
+
+
 	public Album() {}
 
 	public Long getId() {

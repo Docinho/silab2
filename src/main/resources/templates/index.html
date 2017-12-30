@@ -35,11 +35,11 @@
         </header>
 
         <main class="container">
-            {{user}}
+            {{artistaDaVez}}
             <div>
                 <div>
                     <h6>Digite o nome do artista</h6>
-                    <input type="text" name="" ng-modeL="procurado.nome_artista"/>
+                    <input type="text" name="" ng-modeL="procurado.artista"/>
                 </div>
                 
                 <div class="tabela">
@@ -99,7 +99,7 @@
         <div id="modalDestalhesArtista" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <img src="{{artistaDaVez.imagem}}" class="circle" height="30" width="30" alt=""/>
-                <h4>{{artistaDaVez.nome_artista}}</h4>  <h5>Nota: {{artistaDaVez.nota}}</h5>
+                <h4>{{artistaDaVez.nome}}</h4>  <h5>Nota: {{artistaDaVez.nota}}</h5>
                 <h5>Última música ouvida: {{artistaDaVez.ultimaMusica}}</h5>
                 <div class="row s10">
                     <table class="bordered">
@@ -128,7 +128,7 @@
 
                 <a class='dropdown-button btn purple' data-activates='dropdown2'>Ultima música ouvida</a>
                 <ul id='dropdown2' class='dropdown-content'>
-                    <li ng-repeat="musicas in musicasArtistaListadas"><a ng-click = "setUltimaMusicaOuvida(musicas)">{{musicas.nome_musica}}</a></li>
+                    <li ng-repeat="musicas in musicasArtistaListadas"><a ng-click = "setUltimaMusicaOuvida(musicas)">{{musicas.nome}}</a></li>
                 </ul>
 
 
@@ -139,7 +139,7 @@
 
         <div id="modalDetalhesPlaylist" class="modal modal-fixed-footer">
             <div class="modal-content">
-                <h4>{{playlistDaVez.nome_playlist}}</h4>
+                <h4>{{playlistDaVez.nome}}</h4>
                 <input type="text" name="" ng-modeL="musicaProcurada" placeholder="Digite o nome da música"/>
                 <div class="row">
                     <table class="bordered">
@@ -190,6 +190,7 @@
             </div>
         </div>
 
+<!--Organização do formulário // adiciona-playlist-->
         <div class="row">
             <!-- Modal Trigger -->
             <div id="adiciona-playlist" class="modal modal-fixed-footer">
@@ -197,8 +198,8 @@
                     <h4>Crie sua Playlist!</h4>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="nome_playlist" ng-model="Playlist.nome_playlist" type="text" class="validate"/>
-                            <label for="nome_playlist">Nome da playlist</label>
+                            <input id="nome" ng-model="Playlist.nome_playlist" type="text" class="validate"/>
+                            <label for="nome">Nome da playlist</label>
                         </div>
                     </div>
                 </div>
@@ -217,19 +218,19 @@
                     <div class="row">
                         <div class="input-field col s5">
                             <a>Nome do Album</a>
-                            <input id="nome_album" ng-model="Album.nome" type="text" class="validate"/>
+                            <input id="nome" ng-model="Album.nome" type="text" class="validate"/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s8">
                             <a>Imagem do album</a>
-                            <input id="imagem_album" ng-model="Album.imagem" type="text" class="validate"/>
+                            <input id="imagem" ng-model="Album.imagem" type="text" class="validate"/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s10">
                             <a>Ano de lançamento do album</a>
-                            <input id="ano_album" ng-model="Album.ano" type="text" class="validate"/>
+                            <input id="ano" ng-model="Album.ano" type="text" class="validate"/>
                         </div>
                     </div>
                 </div>
@@ -250,27 +251,27 @@
                     <h4>Adicione música</h4>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="nome_artista" ng-model="Musica.nome_artista" type="text" class="validate" disabled="disabled"/>
-                            <label for="nome_artista">{{albumDaVez.nome_artista}}</label>
+                            <input id="artista" ng-model="Musica.artista" type="text" class="validate" disabled="disabled"/>
+                            <label for="artista">{{albumDaVez.artista}}</label>
                         </div>
                         <div class="input-field col s6">
-                            <input id="nome_album" ng-model="Musica.nome_album" type="text" class="validate" disabled="disabled"/>
-                            <label for="nome_album">{{albumDaVez.nome}}</label>
+                            <input id="album" ng-model="Musica.album" type="text" class="validate" disabled="disabled"/>
+                            <label for="album">{{albumDaVez.album}}</label>
                         </div>
 
                         <div class="input-field col s10">
-                            <input id="nome_musica" ng-model="Musica.nome_musica" type="text" class="validate"/>
-                            <label for="nome_musica">Nome da Música</label>
+                            <input id="nome" ng-model="Musica.nome" type="text" class="validate"/>
+                            <label for="nome">Nome da Música</label>
                         </div>
                         <div class="input-field col s10">
-                            <input id="ano_musica" ng-model="Musica.ano_musica" type="text" class="validate" disabled="disabled"/>
-                            <label for="ano_musica">{{albumDaVez.ano}}</label>
+                            <input id="ano" ng-model="Musica.ano" type="text" class="validate" disabled="disabled"/>
+                            <label for="ano">{{albumDaVez.ano}}</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s10">
-                            <input id="duracao_musica" ng-model="Musica.duracao_musica" type="text" class="validate"/>
-                            <label for="duracao_musica">Duração da Música</label>
+                            <input id="duracao" ng-model="Musica.duracao" type="text" class="validate"/>
+                            <label for="duracao">Duração da Música</label>
                         </div>
                     </div>
                 </div>
@@ -290,9 +291,9 @@
                     <table class="bordered">
                         <tbody>
                             <tr ng-repeat="musica in listaMusicas | filter: musicaProcurada">
-                                <td>{{musica.nome_musica}}</td>
-                                <td>{{musica.nome_artista}}</td>
-                                <td>{{musica.nome_album}}</td>
+                                <td>{{musica.nome}}</td>
+                                <td>{{musica.artista}}</td>
+                                <td>{{musica.album}}</td>
                                 <td><a ng-click="addMusicaAPlaylist(musica)" class="btn-floating btn-large waves-effect waves-light purple"><i class="material-icons">add</i></a></td>
                             </tr>
                         </tbody>
@@ -306,7 +307,7 @@
                             <table class="bordered">
                                 <tbody>
                                     <tr ng-repeat="playlist in listaPlaylists">
-                                    <td ng-click = "addMusicaAPlaylist(playlist)">{{playlist.nome_playlist}}</td>
+                                    <td ng-click = "addMusicaAPlaylist(playlist)">{{playlist.nome}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -326,7 +327,7 @@
         <div id="modal1" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <h4>Excluir artista</h4>
-                <p>Deseja realmente excluir {{artista.nome_artista}}?</p>
+                <p>Deseja realmente excluir {{artista.nome}}?</p>
             </div>
             <div class="modal-footer">
                 <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">CANCELAR</a>

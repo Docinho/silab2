@@ -2,16 +2,16 @@ angular.module("modulo1")
 .controller("indexController",
       function($scope, $http){
         $scope.titulo = "Sistema de Musica";
-        $scope.listaArtista = [{nome_artista: "Liam Gallagher", imagem_artista: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4IxDsRit-p3i4rrALx0gYh2Fr6rSdYeOWkV-xHDW369VeWYBk1g",
+        $scope.listaArtista = [{nome: "Liam Gallagher", imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4IxDsRit-p3i4rrALx0gYh2Fr6rSdYeOWkV-xHDW369VeWYBk1g",
         albuns:[], favorito: false, nota:0}];
         $scope.Artista = {nome: "", imagem: "", albuns: [], ehFavorito: false, nota:0, ultimaMusica:""};
-        $scope.Musica = {nome:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracaoMusica:""};
-        $scope.Album = {nome_artista: "", nome:"", imagem: "", ano:"", musicas: []}
-        $scope.Playlist = {nome_playlist:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
-        $scope.artistaDaVez = {nome_artista: "", imagem_artista: "", albuns: [], favorito: false, nota:0, ultimaMusica:""};
+        $scope.Musica = {nome:"", artista:"", album:"", ano:"", duracaoMusica:""};
+        $scope.Album = {nome: "", imagem: "", ano:"", musicas: []}
+        $scope.Playlist = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+        $scope.artistaDaVez = {nome: "", imagem: "", albuns: [], ehFavorito: false, nota:0, ultimaMusica:""};
         $scope.albumDaVez = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
-        $scope.playlistDaVez = {nome_playlist:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
-        $scope.musicaDaVez = {nome_musica:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracao_musica:""}
+        $scope.playlistDaVez = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+        $scope.musicaDaVez = {nome:"", artista:"", album:"", ano:"", duracao_musica:""}
         $scope.listaAlbuns = [];
         $scope.listaAlbunsArtista = [];
         $scope.listaFavoritos = [];
@@ -81,7 +81,7 @@ angular.module("modulo1")
          ///// Artista ////
           
         $scope.setUltimaMusicaOuvida = function(Musica) {
-          $scope.artistaDaVez.ultimaMusica = Musica.nome_musica;
+          $scope.artistaDaVez.ultimaMusica = Musica.nome;
         }
 
         $scope.adicionaArtista = function(Artista) {
@@ -146,8 +146,8 @@ angular.module("modulo1")
           var artista = false;
           var artistaNaLista = 0;
           while (!artista && artistaNaLista < $scope.listaArtista.length) {
-            if($scope.listaArtista[artistaNaLista].nome_artista == string){
-              $scope.listaArtista[artistaNaLista].nome_artista = novoNome;
+            if($scope.listaArtista[artistaNaLista].nome == string){
+              $scope.listaArtista[artistaNaLista].nome= novoNome;
               artista = true;
             };
             artistaNaLista++;
@@ -170,25 +170,28 @@ angular.module("modulo1")
       };
 
       var resetArtista = function() {
-        $scope.Artista = {nome_artista: "", imagem_artista: "", albuns: [], favorito: false, ultimaMusica:""};
+        $scope.Artista = {nome: "", imagem: "", albuns: [], favorito: false, ultimaMusica:""};
       }
 
         $scope.adicionaAlbum = function(Album) {
+        	
+			$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas/" + $scope.artistaDaVez.id + "/albuns", Album)
+			.then(function (resposta){
+				console.log("Sucesso " + resposta);
+				Album.id = resposta.data.id;
+				$scope.artistaDaVez.albuns.push(Album);
+				
+				
+			}, function(resposta){
+				console.log("Falha " + resposta);
 
-          if(Album.nome == "" || angular.isNumber(Album.ano)) {
-            Materialize.toast('Alguma informação está incorreta, tente novamente!', 3000);
-          } if(!$scope.jaExisteAlbum(Album)){
-            Album.artista = $scope.artistaDaVez.nome_artista;
-            $scope.artistaDaVez.albuns.push(Album);
-            $scope.listaAlbuns.push(Album);
-            $scope.artistaDaVez = [{nome_artista: "", imagem_artista: "", albuns: [],ultimaMusica:""}];
-            $('#modalDestalhesArtista').modal('close');
-            $scope.resetAlbumDaVez();
-            $scope.resetArtistaDaVez();
-            }
+				
+			});
+
+            
           }
 
-
+        
         $scope.jaExisteAlbum = function(Album) {
           var existe = false;
           var indice = 0;
@@ -201,15 +204,25 @@ angular.module("modulo1")
         }
 
         var resetAlbum = function() {
-          $scope.Album = {nome_artista: "", nome:"", ano:"", musicas: []}
+          $scope.Album = {nome:"", ano:"", musicas: []}
         }
 
         $scope.modalAdicionaAlbum = function() {
-            $scope.Album = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
+            $scope.Album = {nome:"", imagem:"", ano:"", musicas:[]};
             $('#cadastro-album').modal('open');
             // $scope.artistaDaVez = Artista;
         }
-
+        
+//        var atualizaAlbum = function(Album) {
+//        	console.log($scope.artistaDaVez);
+//        	for (var i = 0; i < $scope.user.artistas.length; i++) {
+//        		console.log($scope.user.artistas[i]);
+//				if($scope.user.artistas[i].nome == $scope.artistaDaVez.nome) {
+//					$scope.user.artistas[i].albuns.push(Album);
+//					$scope.artistaDaVez.albuns.push(Album);
+//				}
+//			}
+//        }
         $scope.modalAdicionarArtista = function() {
           $('#modaldoartista').modal('open');
         }
@@ -220,7 +233,7 @@ angular.module("modulo1")
 
         $scope.modalListaMusica = function(Album) {
           $scope.albumDaVez = Album;
-          $scope.Musica = {nome:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracao_musica:""};
+          $scope.Musica = {nome:"", artista:"", album:"", ano:"", duracao_musica:""};
           $('#modalListaMusica').modal('open');
         }
 
@@ -233,13 +246,7 @@ angular.module("modulo1")
         $scope.modalDestalhesArtista = function(Artista) {
           listarAlbunsArtista(Artista);
           setArtistaVez(Artista);
-          $scope.musicasArtistaListadas = [];
 
-          for (var i = Artista.albuns.length - 1; i >= 0; i--) {
-            for (var j = Artista.albuns[i].musicas.length - 1; j >= 0; j--) {
-              $scope.musicasArtistaListadas.push(Artista.albuns[i].musicas[j]);
-            }
-          }
           $('#modalDestalhesArtista').modal('open');
         }
 
@@ -265,9 +272,9 @@ angular.module("modulo1")
         }
 
         var setMusica = function() {
-          $scope.Musica.nome_artista = $scope.artistaDaVez.nome_artista;
-          $scope.Musica.nome_album = $scope.albumDaVez.nome;
-          $scope.Musica.ano_lancamento = $scope.albumDaVez.ano;
+          $scope.Musica.artista = $scope.artistaDaVez.artista;
+          $scope.Musica.album = $scope.albumDaVez.nome;
+          $scope.Musica.ano = $scope.albumDaVez.ano;
         }
 
         $scope.listaAlbunsReset = function() {
@@ -278,7 +285,7 @@ angular.module("modulo1")
 
         $scope.excluirAlbuns = function(artista){
           for (var i = 0; i < $scope.listaAlbuns.length; i++) {
-            if ($scope.listaArtista[i].nome_artista == artista.nome_artista) {
+            if ($scope.listaArtista[i].artista == artista.artista) {
               $scope.listaAlbuns.splice(i,1);
             }
           }
@@ -288,7 +295,7 @@ angular.module("modulo1")
           var removido = false;
           var indice = 0;
           while (indice<$scope.listaArtista.length && !removido) {
-            if ($scope.listaArtista[indice].nome_artista == Artista.nome_artista) {
+            if ($scope.listaArtista[indice].artista == Artista.artista) {
               $scope.listaArtista.splice(indice, 1);
               removido = true;
             }
@@ -297,9 +304,9 @@ angular.module("modulo1")
 
         $scope.adicionaMusica = function(Musica) {
 
-          var dur = parseInt(Musica.duracao_musica);
+          var dur = parseInt(Musica.duracao);
 
-          if(Musica.nome_musica == "" || Musica.duracao_musica == "" || !Number.isInteger(dur)) {
+          if(Musica.musica == "" || Musica.duracao== "" || !Number.isInteger(dur)) {
             Materialize.toast('Alguma informação está incorreta, tente novamente!', 3000)
           } else {
             if(!$scope.existeMusica(Musica)) {
@@ -307,7 +314,7 @@ angular.module("modulo1")
             $scope.listaMusicas.push(Musica);
             $('#modalDestalhesArtista').modal('close');
           } else {
-            alert("A música " + Musica.nome_musica + " já existe no álbum " + $scope.albumDaVez.nome);
+            alert("A música " + Musica.nome + " já existe no álbum " + $scope.albumDaVez.nome);
           }
           }
             $scope.resetMusica();
@@ -317,7 +324,7 @@ angular.module("modulo1")
         $scope.existeMusica = function(Musica){
           var musicaEncontrada = false;
           for (var i = 0; i < $scope.albumDaVez.musicas.length; i++) {
-            if ($scope.albumDaVez.musicas[i].nome_musica == Musica.nome_musica){
+            if ($scope.albumDaVez.musicas[i].nome == Musica.nome){
               musicaEncontrada = true;
             }
         }
@@ -340,26 +347,26 @@ angular.module("modulo1")
         }
 
         $scope.resetMusica = function () {
-          $scope.Musica = {nome_musica:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracao_musica:""}
+          $scope.Musica = {nome:"", artista:"", album:"", ano:"", duracao:""}
         }
 
         $scope.resetArtistaDaVez = function(){
-          $scope.artistaDaVez = {nome_artista: "", imagem_artista: "", albuns: [], ehFavorito: false, ultimaMusica:""}
+          $scope.artistaDaVez = {nome: "", imagem: "", albuns: [], ehFavorito: false, ultimaMusica:""}
         }
         $scope.resetAlbumDaVez = function(){
             $scope.albumDaVez = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
         }
 
         $scope.resetPlaylist = function() {
-          $scope.Playlist = {nome_playlist:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+          $scope.Playlist = {nome:"", musicas: [], num_musicas_playlist:0, duracao:0}
         }
 
         $scope.resetPlaylistDaVez = function() {
-          $scope.playlistDaVez = {nome_playlist:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+          $scope.playlistDaVez = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
         }
 
         $scope.desfavoritaArtista = function(Artista) {
-          var click = confirm("Excluir o artista " + Artista.nome_artista + " da lista de favoritos?");
+          var click = confirm("Excluir o artista " + Artista.nome + " da lista de favoritos?");
           if(click){
               Artista.ehFavorito = false;
 	          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
@@ -395,11 +402,11 @@ angular.module("modulo1")
         }
 
         $scope.adicionaPlaylist = function(Playlist) {
-          if (!jahExistePlaylist(Playlist.nome_playlist)) {
+          if (!jahExistePlaylist(Playlist.nome)) {
             $scope.listaPlaylists.push(Playlist);
             $scope.resetPlaylist();
           } else {
-            alert("A playlist " + Playlist.nome_playlist + " já existe. Crie uma playlist com outro nome.");
+            alert("A playlist " + Playlist.nome + " já existe. Crie uma playlist com outro nome.");
           }
         }
 
@@ -415,7 +422,7 @@ angular.module("modulo1")
         }
 
         $scope.excluirPlaylist = function() {
-          var click = confirm("Deseja mesmo excluir a playlist " + $scope.playlistDaVez.nome_playlist + "?");
+          var click = confirm("Deseja mesmo excluir a playlist " + $scope.playlistDaVez.nome + "?");
           if(click) {
             $scope.excluir();
           }
@@ -434,19 +441,19 @@ angular.module("modulo1")
         }
 
         $scope.addMusicaAPlaylist = function(Musica) {
-          $scope.playlistDaVez.duracao_playlist += parseInt(Musica.duracao_musica);
+          $scope.playlistDaVez.duracao+= parseInt(Musica.duracao_musica);
           $scope.playlistDaVez.num_musicas_playlist += 1;
 
           $scope.playlistDaVez.musicas.push(Musica);
           $('#modalListaMusica').modal('close');
-          $scope.musicaDaVez = {nome_musica:"", nome_artista:"", nome_album:"", ano_lancamento:"", duracao_musica:""};
+          $scope.musicaDaVez = {nome:"", artista:"", album:"", ano:"", duracao:""};
         }
 
         $scope.excluirMusica = function(Musica) {
-          var click = confirm("Deseja excluir a música " + Musica.nome_musica + " da playlist " + $scope.playlistDaVez.nome_playlist + "?");
+          var click = confirm("Deseja excluir a música " + Musica.nome_musica + " da playlist " + $scope.playlistDaVez.nome+ "?");
           if(click) {
             for (var i = 0; i < $scope.playlistDaVez.musicas.length; i++) {
-              if($scope.playlistDaVez.musicas[i].nome_musica == Musica.nome_musica){
+              if($scope.playlistDaVez.musicas[i].nome_musica == Musica.nome){
                 $scope.playlistDaVez.musicas.splice(i, 1);
               }
             }
