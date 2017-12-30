@@ -28,6 +28,10 @@ public class Usuario {
 	@JsonManagedReference
 	@OneToMany(mappedBy="usuario")
 	private List<Artista> artistas;
+	
+	@JsonManagedReference
+	@OneToMany(mappedBy="usuario")
+	private List<Playlist> playlists;
 
 	
 	public Usuario() {
