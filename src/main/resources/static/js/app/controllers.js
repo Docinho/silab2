@@ -174,7 +174,12 @@ angular.module("modulo1")
       }
 
         $scope.adicionaAlbum = function(Album) {
-        	
+        	if(nomeVazio(Album.nome)) {
+        		Materialize.toast("Nome do album nao pode ser vazio ou nulo", 3000);
+        	}
+        	if(nomeVazio(Album.ano)) {
+        		Materialize.toast("Ano do album nao pode ser vazio ou nulo", 3000);
+        	}
 			$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas/" + $scope.artistaDaVez.id + "/albuns", Album)
 			.then(function (resposta){
 				console.log("Sucesso " + resposta);
