@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fabricadeprogramador.ws.model.Musica;
 import br.com.fabricadeprogramador.ws.model.MusicaDaPlaylist;
 import br.com.fabricadeprogramador.ws.model.Playlist;
 import br.com.fabricadeprogramador.ws.model.Usuario;
@@ -39,5 +40,24 @@ public class MusicaDaPlaylistController {
 		
 		return new ResponseEntity<MusicaDaPlaylist>(musicaCadastrada, HttpStatus.CREATED);
 	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/usuarios/{id}/playlists/{id_playlist}/removermusicaplaylist", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MusicaDaPlaylist> removerMusicaNaPlaylist(@RequestBody MusicaDaPlaylist musicaDaPlaylist, @PathVariable Long id_playlist)   {
+		
+		
+		MusicaDaPlaylist musicaRemovida  = musicaDaPlaylistRepository.acharPorNome(musicaDaPlaylist.getNome());
+		
+		
+		if(musicaRemovida == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		}
+		
+		musicaDaPlaylistRepository.delete(musicaRemovida);
+		
+		return new ResponseEntity<MusicaDaPlaylist>(musicaRemovida, HttpStatus.CREATED);
+	}
+	
+	
+
 
 }

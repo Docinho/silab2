@@ -336,7 +336,7 @@ angular.module("modulo1")
 	              
 	              $scope.resetPlaylist();
 	            } else {
-	              alert("A playlist " + Playlist.nome + " já existe. Crie uma playlist com outro nome.");
+	              Materialize.toast("A playlist " + Playlist.nome + " já existe. Crie uma playlist com outro nome.", 3000);
 	            }
         	}
           }
@@ -344,40 +344,39 @@ angular.module("modulo1")
           var jahExistePlaylist = function(NomePlaylist) {
             var achouPlaylist = false;
 
-            for (var i = 0; i < $scope.listaPlaylists.length; i++) {
-              if($scope.listaPlaylists[i].nome == NomePlaylist) {
+            for (var i = 0; i < $scope.user.playlists.length; i++) {
+              if($scope.user.playlists[i].nome == NomePlaylist) {
                 achouPlaylist = true;
               }
             }
             return achouPlaylist;
           }
 
-          $scope.excluirPlaylist = function() {
-            var click = confirm("Deseja mesmo excluir a playlist " + $scope.playlistDaVez.nome + "?");
+          $scope.removerPlaylist = function(Playlist) {
+            var click = confirm("Deseja mesmo excluir a playlist " + Playlist.nome + "?");
             if(click) {
-              $scope.excluir();
+            	$http.post("http://localhost:8080/usuarios/" + $scope.user.id+ "/playlists/" + Playlist.id + "/remover", Playlist)
+            	  .then(function(resposta) {
+            		  console.log("Playlist deletada");
+            		for (var i = $scope.user.playlists.length - 1; i> -1; i--) {
+                      if($scope.user.playlists[i] == Playlist) {
+                        $scope.user.playlists.splice(i, 1);
+                      }
+                    }
+            		}, function(resposta) {
+            		  console.log("Erro ao deletar playlist", resposta);
+            	  });
             }
           }
 
-          $scope.excluir = function() {
-            var click = confirm("Deseja excluir a playlist " + $scope.playlistDaVez + "?");
-            if(click) {
-            for (var i = $scope.listaPlaylists.length - 1; i> -1; i--) {
-              if($scope.listaPlaylists[i] == $scope.playlistDaVez) {
-                $scope.listaPlaylists.splice(i, 1);
-                $('#modalDetalhesPlaylist').modal('close');
-              }
-            }
-          }
-          }
 
           $scope.addMusicaAPlaylist = function(Musica) {
 //            $scope.playlistDaVez.duracao+= parseInt(Musica.duracao_musica);
 //            $scope.playlistDaVez.num_musicas_playlist += 1;
-        	  console.log($scope.playlistDaVez);
-        	  var playlist = $scope.playlistDaVez;
-        	  playlist.musicas.push(Musica);
-        	  http.post("http://localhost:8080/usuarios/" + $scope.user.id+ "/playlists/" + $scope.playlistDaVez.id, playlist)
+//        	  console.log($scope.playlistDaVez);
+//        	  var playlist = $scope.playlistDaVez;
+//        	  playlist.musicas.push(Musica);
+        	  $http.post("http://localhost:8080/usuarios/" + $scope.user.id+ "/playlists/" + $scope.playlistDaVez.id + "/musicas", Musica)
         	  .then(function(resposta) {
         		  console.log("Musica adicionada na playlist");
         		  $scope.playlistDaVez.musicas.push(Musica);
@@ -392,13 +391,28 @@ angular.module("modulo1")
           $scope.excluirMusica = function(Musica) {
             var click = confirm("Deseja excluir a música " + Musica.nome + " da playlist " + $scope.playlistDaVez.nome+ "?");
             if(click) {
-              for (var i = 0; i < $scope.playlistDaVez.musicas.length; i++) {
-                if($scope.playlistDaVez.musicas[i].nome == Musica.nome){
-                  $scope.playlistDaVez.musicas.splice(i, 1);
-                }
-              }
+            	
+				$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/playlists/" + $scope.playlistDaVez.id + "/removermusicaplaylist", Musica)
+				.then(function (resposta){
+					console.log("Deletou a musica com sucesso " + resposta);
+			         for (var i = 0; i < $scope.playlistDaVez.musicas.length; i++) {
+			              if($scope.playlistDaVez.musicas[i].nome == Musica.nome){
+			                $scope.playlistDaVez.musicas.splice(i, 1);
+			              }
+			            }
+					
+					
+				}, function(resposta){
+					console.log("Falha " + resposta);
+	
+					
+				});
+            	
             }
           }
+          
+          
+
 
           $scope.modalAdicionaPlaylist = function() {
           $('#adiciona-playlist').modal('open');
@@ -473,22 +487,26 @@ angular.module("modulo1")
         	var dur = parseInt(Musica.duracao);
         	if(Musica.nome == "" || Musica.duracao== "" || !Number.isInteger(dur)) {
                 Materialize.toast('Alguma informação está incorreta, tente novamente!', 3000);
-        	} else {
-				$http.post("http://localhost:8080/usuarios/"+$scope.user.id+"/artistas/"+$scope.artistaDaVez.id+"/albuns/"+$scope.albumDaVez.id+"/musica", Musica)
-				.then(function (resposta){
-					console.log("Cadastrou a musica com sucesso " + resposta);
-					Musica.id = resposta.data.id;
-					$scope.albumDaVez.musicas.push(Musica);
+        	}else{
+            	if($scope.existeMusica(Musica)) {
+                	Materialize.toast('A Musica já existe no album!', 3000);
+                
+        		} else {
+        			$http.post("http://localhost:8080/usuarios/"+$scope.user.id+"/artistas/"+$scope.artistaDaVez.id+"/albuns/"+$scope.albumDaVez.id+"/musica", Musica)
+        			.then(function (resposta){
+        				console.log("Cadastrou a musica com sucesso " + resposta);
+						Musica.id = resposta.data.id;
+						$scope.albumDaVez.musicas.push(Musica);
 					
 					
-				}, function(resposta){
-					console.log("Falha " + resposta);
-	
-					
-				});
+					}, function(resposta){
+						console.log("Falha " + resposta);
+		
+						
+					});
+        		}
         	}
-        	
-        }
+       }
 
 
         $scope.existeMusica = function(Musica){

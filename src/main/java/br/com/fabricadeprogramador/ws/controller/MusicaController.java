@@ -30,7 +30,7 @@ public class MusicaController {
 	private AlbumRepository albumRepository;
 
 	@RequestMapping(method = RequestMethod.POST, value = "/usuarios/{idUsuario}/artistas/{idArtista}/albuns/{idAlbuns}/musica", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Musica> cadastrarUsuario(@RequestBody Musica musica, @PathVariable Long idAlbuns) throws ServletException {
+	public ResponseEntity<Musica> cadastrarMusica(@RequestBody Musica musica, @PathVariable Long idAlbuns) throws ServletException {
 		Album album = albumRepository.findOne(idAlbuns);
 		musica.setAlbum(album);
 		Musica musicaCadastrada = musicaRepository.save(musica);
@@ -43,4 +43,8 @@ public class MusicaController {
 		Collection<Musica> musicas = album.getMusicas();
 		return new ResponseEntity(musicas, HttpStatus.OK);
 	}
+	
+	
+
+
 }

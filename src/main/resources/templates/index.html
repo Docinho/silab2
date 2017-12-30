@@ -31,12 +31,13 @@
             <div class="titulo">
             <h2><bold>MÚSICA</bold></h2> <!--mostra a informação quando ela estiver carregada não aparecendo "{{titulo}}" no delay, por exemplo  -->
             </div>
-
+          
+            <a class="waves-effect waves-light btn purple" href="http://localhost:8080/login">Sair</a>
+			
         </header>
 
         <main class="container">
-        	{{user}}
-            {{artistaDaVez}}
+
             <div>
                 <div>
                     <h6>Digite o nome do artista</h6>
@@ -77,20 +78,25 @@
                         <tr>
                             <th>Nome da playlist</th>
                             <th>Músicas</th>
-                            <th>Duração</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat = "playlist in user.playlists | filter: playlistProcurada">
                             <td ng-click = "modalDetalhesPlaylist(playlist)">{{playlist.nome}}</td>
-                           <!-- <td>{{playlist.num_musicas_playlist}}</td>
-                            <td>{{playlist.duracao_playlist}}</td> --> 
+                           <td>
+                           		<ul ng-repeat="i in playlist.musicas">
+                           			<li>{{i.nome}}</li>
+                           		</ul>
+                           </td>
+           					<td><button ng-click="removerPlaylist(playlist)">Excluir</button></td>
                         </tr>
                     </tbody>
                 </table>
                 <a ng-click="modalAdicionaPlaylist()" id="botoes" class="waves-effect waves-light btn black" href="#modalAdicionarPlaylist">+playlist</a>
 
             </div>
+	
 
 
         </main>
@@ -149,7 +155,7 @@
                     <table class="bordered">
                         <tbody>
                             <tr ng-repeat="musica in playlistDaVez.musicas | filter: musicaProcurada">
-                                <td>{{musica.nome_musica}}</td>
+                                <td>{{musica.nome}}</td>
                                 <td><a ng-click="excluirMusica(musica)" class="btn-floating btn-large waves-effect waves-light purple"><i class="material-icons">cancel</i></a></td>
                             </tr>
                         </tbody>

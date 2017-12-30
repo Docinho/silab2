@@ -34,6 +34,14 @@ public class Playlist implements Serializable{
 	private List<MusicaDaPlaylist> musicas;
 	
 
+	public List<MusicaDaPlaylist> getMusicas() {
+		return musicas;
+	}
+
+	public void setMusicas(List<MusicaDaPlaylist> musicas) {
+		this.musicas = musicas;
+	}
+
 	public Long getId() {
 		return id;
 	}
