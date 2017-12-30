@@ -1,6 +1,8 @@
 package br.com.fabricadeprogramador.ws.model;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,6 +32,10 @@ public class Album implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="Artista_id")
 	private Artista artista;
+	
+	@JsonManagedReference
+	@OneToMany(mappedBy = "album")
+	private List<Musica> musicas;
 
 	
 	public Artista getArtista() {
@@ -81,6 +87,8 @@ public class Album implements Serializable{
 		
 	}
 
-
+	public Collection<Musica> getMusicas() {
+		return musicas;
+	}
 
 }

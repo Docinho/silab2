@@ -174,35 +174,43 @@ angular.module("modulo1")
       }
 
         $scope.adicionaAlbum = function(Album) {
+        	var invalido = false;
         	if(nomeVazio(Album.nome)) {
-        		Materialize.toast("Nome do album nao pode ser vazio ou nulo", 3000);
+        		invalido = true;
+        		Materialize.toast("Nome do álbum nao pode ser vazio ou nulo", 3000);
         	}
         	if(nomeVazio(Album.ano)) {
-        		Materialize.toast("Ano do album nao pode ser vazio ou nulo", 3000);
+        		invalido = true;
+        		Materialize.toast("Ano do álbum nao pode ser vazio ou nulo", 3000);
         	}
-			$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas/" + $scope.artistaDaVez.id + "/albuns", Album)
-			.then(function (resposta){
-				console.log("Sucesso " + resposta);
-				Album.id = resposta.data.id;
-				$scope.artistaDaVez.albuns.push(Album);
-				
-				
-			}, function(resposta){
-				console.log("Falha " + resposta);
-
-				
-			});
-
+        	if(jaExisteAlbum(Album)){
+        		invalido = true;
+        		Materialize.toast("Álbum já cadastrado", 3000);
+        	}
+        	if(!invalido){
+				$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas/" + $scope.artistaDaVez.id + "/albuns", Album)
+				.then(function (resposta){
+					console.log("Sucesso " + resposta);
+					Album.id = resposta.data.id;
+					$scope.artistaDaVez.albuns.push(Album);
+					
+					
+				}, function(resposta){
+					console.log("Falha " + resposta);
+	
+					
+				});
+        	}
             
           }
 
         
-        $scope.jaExisteAlbum = function(Album) {
+        var jaExisteAlbum = function(Album) {
           var existe = false;
           var indice = 0;
-          while (indice < $scope.listaAlbuns.length && !existe) {
-            if($scope.listaAlbuns[indice].nome == Album.nome) {
-              naoExiste = true;
+          while (indice < $scope.artistaDaVez.albuns.length && !existe) {
+            if($scope.artistaDaVez.albuns[indice].nome == Album.nome) {
+              existe = true;
             }
           }
           return existe;

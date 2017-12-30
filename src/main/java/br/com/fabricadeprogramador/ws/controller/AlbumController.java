@@ -40,20 +40,14 @@ public class AlbumController {
 		Album albumCadastrado = albumRepository.save(album);
 		return new ResponseEntity<Album>(albumCadastrado, HttpStatus.OK);
 	}
+
+	// nao testado, mas n utilizado
+	@RequestMapping(method = RequestMethod.GET, value = "/usuarios/{id}/artistas/{idArtista}/albuns", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Collection<Album>> colecaoAlbunsArtista(@PathVariable Long idArtista) {
+		Artista artista = artistaRepository.findOne(idArtista);
+		Collection<Album> albuns = artista.getAlbuns();
+		return new ResponseEntity<Collection<Album>>(albuns, HttpStatus.OK);
+	}
 	
-//	@RequestMapping(method = RequestMethod.GET, value = "/usuarios/{id}/artistas/{idArtista}/album", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Collection<Album>> colecaoAlbunsArtista(@PathVariable Long idArtista) {
-//		//ajeitar a musica com artista no front
-//		Artista artista = artistaRepository.findOne(idArtista);
-//		Collection<Album> albuns = artista.getAlbuns();
-//		return new ResponseEntity<Collection<Album>>(albuns, HttpStatus.OK);
-//	}
-	
-//	@RequestMapping(method = RequestMethod.GET, value = "/usuarios/{id}/artistas/{idArtista}/album", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Collection<Album>> colecaoAlbunsUsuario(@PathVariable Long id) {
-//		//ajeitar a musica com artista no front
-//		Usuario usuario = usuarioRepository.findOne(id);
-//		Collection<Album> albuns = (Collection<Album>) usuario.getAlbuns();
-//		return new ResponseEntity<Collection<Album>>(albuns, HttpStatus.OK);
-//	}
+
 }
