@@ -7,10 +7,10 @@ angular.module("modulo1")
         $scope.Artista = {nome: "", imagem: "", albuns: [], ehFavorito: false, nota:0, ultimaMusica:""};
         $scope.Musica = {nome:"", ano:"", duracao:""};
         $scope.Album = {nome: "", imagem: "", ano:"", musicas: []}
-        $scope.Playlist = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+        $scope.Playlist = {nome:"", musicas:[]}
         $scope.artistaDaVez = {nome: "", imagem: "", albuns: [], ehFavorito: false, nota:0, ultimaMusica:""};
         $scope.albumDaVez = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
-        $scope.playlistDaVez = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+        $scope.playlistDaVez = {nome:"", musicas:[]}
         $scope.musicaDaVez = {nome:"", ano:"", duracao:""}
         $scope.listaAlbuns = [];
         $scope.listaAlbunsArtista = [];
@@ -19,6 +19,7 @@ angular.module("modulo1")
         $scope.listaMusicas = [];
         $scope.musicasArtistaListadas = [];
         $scope.usuariosCadastrados  = [];
+    	$scope.todasMusicas = [];
         $scope.user = JSON.parse(localStorage.getItem("userInfo"));
         
         
@@ -309,29 +310,42 @@ angular.module("modulo1")
         //// Playlist ////
         
         $scope.resetPlaylist = function() {
-            $scope.Playlist = {nome:"", musicas: [], num_musicas_playlist:0, duracao:0}
+            $scope.Playlist = {nome:"", musicas:[]}
           }
 
           $scope.resetPlaylistDaVez = function() {
-            $scope.playlistDaVez = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+            $scope.playlistDaVez = {nome:"", musicas:[]}
           }
 
    
 
           $scope.adicionaPlaylist = function(Playlist) {
-            if (!jahExistePlaylist(Playlist.nome)) {
-              $scope.listaPlaylists.push(Playlist);
-              $scope.resetPlaylist();
-            } else {
-              alert("A playlist " + Playlist.nome + " já existe. Crie uma playlist com outro nome.");
-            }
+        	if(nomeVazio(Playlist.nome)){
+        		Materialize.toast("Nome da playlist não pode ser vazio", 3000);
+        	} else {
+	            if (!jahExistePlaylist(Playlist.nome)) {
+	            	console.log(Playlist);
+	            	$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/playlists", Playlist)
+	            	.then(function(resposta){
+	            		console.log("Playlist cadastrada com sucesso, ", resposta);
+	            		Playlist.id = resposta.data.id;
+	            		$scope.user.playlists.push(Playlist);
+	            	}, function(resposta){
+	            		console.log("Falha no cadastramento da playlist", resposta);
+	            	})
+	              
+	              $scope.resetPlaylist();
+	            } else {
+	              alert("A playlist " + Playlist.nome + " já existe. Crie uma playlist com outro nome.");
+	            }
+        	}
           }
 
           var jahExistePlaylist = function(NomePlaylist) {
             var achouPlaylist = false;
 
             for (var i = 0; i < $scope.listaPlaylists.length; i++) {
-              if($scope.listaPlaylists[i].nome_playlist == NomePlaylist) {
+              if($scope.listaPlaylists[i].nome == NomePlaylist) {
                 achouPlaylist = true;
               }
             }
@@ -358,10 +372,19 @@ angular.module("modulo1")
           }
 
           $scope.addMusicaAPlaylist = function(Musica) {
-            $scope.playlistDaVez.duracao+= parseInt(Musica.duracao_musica);
-            $scope.playlistDaVez.num_musicas_playlist += 1;
-
-            $scope.playlistDaVez.musicas.push(Musica);
+//            $scope.playlistDaVez.duracao+= parseInt(Musica.duracao_musica);
+//            $scope.playlistDaVez.num_musicas_playlist += 1;
+        	  console.log($scope.playlistDaVez);
+        	  var playlist = $scope.playlistDaVez;
+        	  playlist.musicas.push(Musica);
+        	  http.post("http://localhost:8080/usuarios/" + $scope.user.id+ "/playlists/" + $scope.playlistDaVez.id, playlist)
+        	  .then(function(resposta) {
+        		  console.log("Musica adicionada na playlist");
+        		  $scope.playlistDaVez.musicas.push(Musica);
+        	  }, function(resposta) {
+        		  console.log("Erro ao adicionar musica na playlist", resposta);
+        	  })
+//            $scope.playlistDaVez.musicas.push(Musica);
             $('#modalListaMusica').modal('close');
             $scope.musicaDaVez = {nome:"",  ano:"", duracao:""};
           }
@@ -384,7 +407,22 @@ angular.module("modulo1")
         $scope.modalListaMusica = function(Album) {
           $scope.albumDaVez = Album;
           $scope.Musica = {nome:"", ano:"", duracao:""};
+          $scope.listaTodasAsMusicas();
           $('#modalListaMusica').modal('open');
+        }
+        
+        $scope.listaTodasAsMusicas = function() {
+        	$scope.todasMusicas = [];
+        	
+        	for(i = 0; i < $scope.user.artistas.length; i++) {
+        		for(j = 0; j < $scope.user.artistas[i].albuns.length; j++) {
+        			for (k = 0; k < $scope.user.artistas[i].albuns[j].musicas.length; k++) {
+        				$scope.todasMusicas.push($scope.user.artistas[i].albuns[j].musicas[k]);
+        			}
+        		}
+        	}
+        	
+        	console.log($scope.todasMusicas);
         }
 
         $scope.modalAdicionarMusica = function(Album) {
@@ -401,6 +439,7 @@ angular.module("modulo1")
         }
 
         $scope.modalAdicionarMusicaPlaylist = function() {
+        	$scope.listaTodasAsMusicas();
           $('#add-musica-playlist').modal('open');
         }
 

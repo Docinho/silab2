@@ -1,22 +1,18 @@
 package br.com.fabricadeprogramador.ws.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-public class Playlist implements Serializable{
+public class MusicaDaPlaylist implements Serializable {
 	
 	@Transient
 	private static final long serialVersionUID = 1L;
@@ -24,15 +20,17 @@ public class Playlist implements Serializable{
 	@GeneratedValue
 	private Long id;
 	private String nome;
+	private String ano;
+	private String duracao;
+	
 	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name="Usuario_id")
-	private Usuario usuario;
+	@JoinColumn(name="Playlist_id")
+	private Playlist playlist;
 	
-	@JsonManagedReference
-	@OneToMany(mappedBy="playlist")
-	private List<MusicaDaPlaylist> musicas;
-	
+	public MusicaDaPlaylist() {
+		
+	}
 
 	public Long getId() {
 		return id;
@@ -50,14 +48,32 @@ public class Playlist implements Serializable{
 		this.nome = nome;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-		
+	public String getAno() {
+		return ano;
+	}
+
+	public void setAno(String ano) {
+		this.ano = ano;
+	}
+
+	public String getDuracao() {
+		return duracao;
+	}
+
+	public void setDuracao(String duracao) {
+		this.duracao = duracao;
+	}
+
+	public Playlist getPlaylist() {
+		return playlist;
+	}
+
+	public void setPlaylist(Playlist playlist) {
+		this.playlist = playlist;
 	}
 	
-	public Usuario getUsuario() {
-		return this.usuario;
-		
-	}
 	
+	
+	
+
 }

@@ -70,7 +70,7 @@
 
 
             <h6>Digite o nome da playlist</h6>
-            <input type="text" name="" ng-modeL="procurado.nome_playlist"/>
+            <input type="text" name="" ng-modeL="procurado.nome"/>
             <div class="tabela">
                 <table>
                     <thead>
@@ -81,10 +81,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat = "playlist in listaPlaylists | filter: playlistProcurada">
-                            <td ng-click = "modalDetalhesPlaylist(playlist)">{{playlist.nome_playlist}}</td>
-                            <td>{{playlist.num_musicas_playlist}}</td>
-                            <td>{{playlist.duracao_playlist}}</td>
+                        <tr ng-repeat = "playlist in user.playlists | filter: playlistProcurada">
+                            <td ng-click = "modalDetalhesPlaylist(playlist)">{{playlist.nome}}</td>
+                           <!-- <td>{{playlist.num_musicas_playlist}}</td>
+                            <td>{{playlist.duracao_playlist}}</td> --> 
                         </tr>
                     </tbody>
                 </table>
@@ -162,7 +162,37 @@
                 <a ng-click = "resetPlaylistDaVez()" href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Fechar</a>
             </div>
         </div>
+        
+        <!-- Lista musica  e adiciona na playlist-->
+        <div id="modalAddMusicaPlaylist" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h4>{{playlistDaVez.nome}}</h4>
+                <div class="row">
+                    <input type="text" name="" ng-modeL="musicaProcurada" placeholder="Digite o nome da música"/>
+					<h2>Músicas do sistema</h2>
+						<ul ng-repeat="i in todasMusicas">
+							<li>{{i.nome}}</li>
+							<li>{{i.ano}}</li>
+						</ul>
+                </div>
 
+                <div id="add-musica-playlist" class="modal modal-fixed-footer">
+                    <div class="modal-content">
+                        <h4>Adicionar a Playlist</h4>
+                        <div class="row">
+                            <table class="bordered">
+                                <tbody>
+                                    <tr ng-repeat="playlist in user.playlists">
+                                    <td ng-click = "addMusicaAPlaylist(playlist)">{{playlist.nome}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>    
+		</div>
 
 
         <!-- Modal Structure -->
@@ -203,7 +233,7 @@
                     <h4>Crie sua Playlist!</h4>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="nome" ng-model="Playlist.nome_playlist" type="text" class="validate"/>
+                            <input id="nome" ng-model="Playlist.nome" type="text" class="validate"/>
                             <label for="nome">Nome da playlist</label>
                         </div>
                     </div>
@@ -290,14 +320,15 @@
         <div id="modalListaMusica" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <h4>{{albumDaVez.nome}}</h4>
+                <h2>Músicas do sistema</h2>
                 <div class="row">
                     <input type="text" name="" ng-modeL="musicaProcurada" placeholder="Digite o nome da música"/>
                     <table class="bordered">
                         <tbody>
-                            <tr ng-repeat="musica in albumDaVez.musicas | filter: musicaProcurada">
+                            <tr ng-repeat="musica in todasMusicas | filter: musicaProcurada">
                                 <td>{{musica.nome}}</td>
-                                <td>{{musica.artista}}</td>
-                                <td>{{musica.album}}</td>
+                                <td>{{musica.ano}}</td>
+                                <td>{{musica.duracao}}</td>
                                 <td><a ng-click="addMusicaAPlaylist(musica)" class="btn-floating btn-large waves-effect waves-light purple"><i class="material-icons">add</i></a></td>
                             </tr>
                         </tbody>
@@ -310,7 +341,7 @@
                         <div class="row">
                             <table class="bordered">
                                 <tbody>
-                                    <tr ng-repeat="playlist in listaPlaylists">
+                                    <tr ng-repeat="playlist in user.playlists">
                                     <td ng-click = "addMusicaAPlaylist(playlist)">{{playlist.nome}}</td>
                                     </tr>
                                 </tbody>
