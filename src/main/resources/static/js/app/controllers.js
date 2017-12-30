@@ -5,13 +5,13 @@ angular.module("modulo1")
         $scope.listaArtista = [{nome: "Liam Gallagher", imagem: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4IxDsRit-p3i4rrALx0gYh2Fr6rSdYeOWkV-xHDW369VeWYBk1g",
         albuns:[], favorito: false, nota:0}];
         $scope.Artista = {nome: "", imagem: "", albuns: [], ehFavorito: false, nota:0, ultimaMusica:""};
-        $scope.Musica = {nome:"", artista:"", album:"", ano:"", duracaoMusica:""};
+        $scope.Musica = {nome:"", ano:"", duracao:""};
         $scope.Album = {nome: "", imagem: "", ano:"", musicas: []}
         $scope.Playlist = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
         $scope.artistaDaVez = {nome: "", imagem: "", albuns: [], ehFavorito: false, nota:0, ultimaMusica:""};
         $scope.albumDaVez = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
         $scope.playlistDaVez = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
-        $scope.musicaDaVez = {nome:"", artista:"", album:"", ano:"", duracao_musica:""}
+        $scope.musicaDaVez = {nome:"", ano:"", duracao:""}
         $scope.listaAlbuns = [];
         $scope.listaAlbunsArtista = [];
         $scope.listaFavoritos = [];
@@ -355,14 +355,14 @@ angular.module("modulo1")
 
             $scope.playlistDaVez.musicas.push(Musica);
             $('#modalListaMusica').modal('close');
-            $scope.musicaDaVez = {nome:"", artista:"", album:"", ano:"", duracao:""};
+            $scope.musicaDaVez = {nome:"",  ano:"", duracao:""};
           }
 
           $scope.excluirMusica = function(Musica) {
-            var click = confirm("Deseja excluir a música " + Musica.nome_musica + " da playlist " + $scope.playlistDaVez.nome+ "?");
+            var click = confirm("Deseja excluir a música " + Musica.nome + " da playlist " + $scope.playlistDaVez.nome+ "?");
             if(click) {
               for (var i = 0; i < $scope.playlistDaVez.musicas.length; i++) {
-                if($scope.playlistDaVez.musicas[i].nome_musica == Musica.nome){
+                if($scope.playlistDaVez.musicas[i].nome == Musica.nome){
                   $scope.playlistDaVez.musicas.splice(i, 1);
                 }
               }
@@ -375,7 +375,7 @@ angular.module("modulo1")
 
         $scope.modalListaMusica = function(Album) {
           $scope.albumDaVez = Album;
-          $scope.Musica = {nome:"", artista:"", album:"", ano:"", duracao_musica:""};
+          $scope.Musica = {nome:"", ano:"", duracao:""};
           $('#modalListaMusica').modal('open');
         }
 
@@ -398,9 +398,8 @@ angular.module("modulo1")
 
        
         var setMusica = function() {
-          $scope.Musica.artista = $scope.artistaDaVez.artista;
-          $scope.Musica.album = $scope.albumDaVez.nome;
-          $scope.Musica.ano = $scope.albumDaVez.ano;
+
+        $scope.Musica.ano = $scope.albumDaVez.ano;
         }
 
         $scope.listaAlbunsReset = function() {
@@ -424,21 +423,23 @@ angular.module("modulo1")
 
         //// Musica ////
         $scope.adicionaMusica = function(Musica) {
-
-          var dur = parseInt(Musica.duracao);
-
-          if(Musica.musica == "" || Musica.duracao== "" || !Number.isInteger(dur)) {
-            Materialize.toast('Alguma informação está incorreta, tente novamente!', 3000)
-          } else {
-            if(!$scope.existeMusica(Musica)) {
-	            $scope.albumDaVez.musicas.push(Musica);
-	            $scope.listaMusicas.push(Musica);
-	            $('#modalDestalhesArtista').modal('close');
-          } else {
-            Materialize.toast("A música " + Musica.nome + " já existe no álbum " + $scope.albumDaVez.nome);
-          }
-          }
-            $scope.resetMusica();
+        	if(Musica.musica == "" || Musica.duracao== "" || !Number.isInteger(Musica.duracao)) {
+                Materialize.toast('Alguma informação está incorreta, tente novamente!', 3000);
+        	} else {
+				$http.post("http://localhost:8080/usuarios/"+$scope.user.id+"/artistas/"+$scope.artistaDaVez.id+"/albuns/"+$scope.albumDaVez.id+"/musica", Musica)
+				.then(function (resposta){
+					console.log("Cadastrou a musica com sucesso " + resposta);
+					Musica.id = resposta.data.id;
+					$scope.albumDaVez.musicas.push(Musica);
+					
+					
+				}, function(resposta){
+					console.log("Falha " + resposta);
+	
+					
+				});
+        	}
+        	
         }
 
 
@@ -467,7 +468,7 @@ angular.module("modulo1")
         }
 
         $scope.resetMusica = function () {
-          $scope.Musica = {nome:"", artista:"", album:"", ano:"", duracao:""}
+          $scope.Musica = {nome:"", ano:"", duracao:""}
         }
 
         $scope.resetArtistaDaVez = function(){

@@ -21,7 +21,14 @@ public class Musica implements Serializable{
 	private Long id;
 	private String nome;
 	private String duracao;
-	
+	private String ano;
+	public String getAno() {
+		return ano;
+	}
+
+	public void setAno(String ano) {
+		this.ano = ano;
+	}
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name="Album_id")
