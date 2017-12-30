@@ -82,7 +82,15 @@ angular.module("modulo1")
          ///// Artista ////
           
         $scope.setUltimaMusicaOuvida = function(Musica) {
-          $scope.artistaDaVez.ultimaMusica = Musica.nome;
+        	var artista = $scope.artistaDaVez;
+        	artista.ultimaMusica = Musica.nome;
+        	$http.post("http://localhost:8080/usuarios/" + $user.id + "/artistas", artista)
+        	.then(function(resposta) {
+        		console.log("Ultima musica do artista escutada adicionada com sucesso", resposta);
+        	}, function(resposta) {
+        		console.log("Falha na adição da ultima musica ouvida", resposta);
+        	});
+          
         }
 
         $scope.adicionaArtista = function(Artista) {
@@ -212,7 +220,7 @@ angular.module("modulo1")
         }
       
       $scope.modalDestalhesArtista = function(Artista) {
-          //listarAlbunsArtista(Artista);
+          $scope.listaMusicas(Artista);
           setArtistaVez(Artista);
 
           $('#modalDestalhesArtista').modal('open');
@@ -423,7 +431,8 @@ angular.module("modulo1")
 
         //// Musica ////
         $scope.adicionaMusica = function(Musica) {
-        	if(Musica.musica == "" || Musica.duracao== "" || !Number.isInteger(Musica.duracao)) {
+        	var dur = parseInt(Musica.duracao);
+        	if(Musica.nome == "" || Musica.duracao== "" || !Number.isInteger(dur)) {
                 Materialize.toast('Alguma informação está incorreta, tente novamente!', 3000);
         	} else {
 				$http.post("http://localhost:8080/usuarios/"+$scope.user.id+"/artistas/"+$scope.artistaDaVez.id+"/albuns/"+$scope.albumDaVez.id+"/musica", Musica)
@@ -475,4 +484,13 @@ angular.module("modulo1")
           $scope.artistaDaVez = {nome: "", imagem: "", albuns: [], ehFavorito: false, ultimaMusica:""}
         }
        
+        $scope.listaMusicas = function() {
+        	$scope.musicasArtistaListadas = [];
+        	for(i = 0; i < $scope.artistaDaVez.albuns.length ; i++) {
+        		for(j = 0; j < $scope.artistaDaVez.albuns[i].musicas.length; j++) {
+        			$scope.musicasArtistaListadas.push($scope.artistaDaVez.albuns[i].musicas[j]);
+        		}
+        	}
+        	console.log($scope.musicasArtistaListadas)
+        }
     });
