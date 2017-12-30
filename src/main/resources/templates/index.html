@@ -104,7 +104,7 @@
                 <div class="row s10">
                     <table class="bordered">
                         <tbody>
-                            <tr ng-repeat="album in listaAlbunsArtista">
+                            <tr ng-repeat="album in artistaDaVez.albuns">
                                 <td><img class = "circle" src="{{album.imagem}}" alt="Imagem não existe" width="20" height="20"/></td>
                                 <td ng-click = "modalListaMusica(album)">{{album.nome}}</td>
                                 <td>{{album.ano}}</td>
@@ -190,7 +190,7 @@
             </div>
         </div>
 
-<!--Organização do formulário // adiciona-playlist-->
+	<!--Organização do formulário // adiciona-playlist-->
         <div class="row">
             <!-- Modal Trigger -->
             <div id="adiciona-playlist" class="modal modal-fixed-footer">

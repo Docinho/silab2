@@ -31,6 +31,7 @@ angular.module("modulo1")
 
           }, function(resposta){
             console.log(resposta.status);
+            alert("Ops! Algo de errado aconteceu");
           });
 
         $scope.fazerLogin = function(Usuario) {
@@ -114,8 +115,6 @@ angular.module("modulo1")
         	}
         }
          
-
-
         $scope.atualizaArtista = function(Artista) {
           $scope.Album = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
           $scope.abrirInfoAlbum();
@@ -137,6 +136,41 @@ angular.module("modulo1")
           return artista;
         };
 
+        $scope.desfavoritaArtista = function(Artista) {
+            var click = confirm("Excluir o artista " + Artista.nome + " da lista de favoritos?");
+            if(click){
+                Artista.ehFavorito = false;
+  	          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+  	          .then(function(resposta) {
+  	        	  console.log("Artista desfavoritado: ", resposta.data);
+  	          }, function(resposta) {
+  	        	  console.log("Erro ", resposta);
+  	          })
+            }
+
+          }
+
+          $scope.favoritaArtista = function(Artista) {
+            Artista.ehFavorito =true;
+            $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+            .then(function(resposta) {
+          	  console.log("Artista favoritado: ", resposta.data);
+            }, function(resposta) {
+          	  console.log("Erro ", resposta);
+            })
+          }
+
+          $scope.avaliaArtista = function(Nota) {
+            $scope.artistaDaVez.nota = Nota;
+            Artista = $scope.artistaDaVez;
+            
+            $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+            .then(function(resposta) {
+          	  console.log("Artista avaliado: ", resposta.data);
+            }, function(resposta) {
+          	  console.log("Erro ", resposta);
+            })
+          }
         var nomeVazio = function(string) {
            return !string.trim() || string.length == 0;
 
@@ -173,6 +207,27 @@ angular.module("modulo1")
         $scope.Artista = {nome: "", imagem: "", albuns: [], favorito: false, ultimaMusica:""};
       }
 
+      $scope.modalAdicionarArtista = function() {
+          $('#modaldoartista').modal('open');
+        }
+      
+      $scope.modalDestalhesArtista = function(Artista) {
+          //listarAlbunsArtista(Artista);
+          setArtistaVez(Artista);
+
+          $('#modalDestalhesArtista').modal('open');
+        }
+      
+      var listarAlbunsArtista = function(Artista) {
+          $scope.listaAlbunsArtista = Artista.albuns;
+        }
+
+        var setArtistaVez = function(Artista) {
+          $scope.artistaDaVez = Artista;
+        }
+
+
+      //// Album /////
         $scope.adicionaAlbum = function(Album) {
         	var invalido = false;
         	if(nomeVazio(Album.nome)) {
@@ -219,6 +274,14 @@ angular.module("modulo1")
         var resetAlbum = function() {
           $scope.Album = {nome:"", ano:"", musicas: []}
         }
+        
+        $scope.excluirAlbuns = function(artista){
+            for (var i = 0; i < $scope.listaAlbuns.length; i++) {
+              if ($scope.listaArtista[i].artista == artista.artista) {
+                $scope.listaAlbuns.splice(i,1);
+              }
+            }
+          }
 
         $scope.modalAdicionaAlbum = function() {
             $scope.Album = {nome:"", imagem:"", ano:"", musicas:[]};
@@ -226,21 +289,87 @@ angular.module("modulo1")
             // $scope.artistaDaVez = Artista;
         }
         
-//        var atualizaAlbum = function(Album) {
-//        	console.log($scope.artistaDaVez);
-//        	for (var i = 0; i < $scope.user.artistas.length; i++) {
-//        		console.log($scope.user.artistas[i]);
-//				if($scope.user.artistas[i].nome == $scope.artistaDaVez.nome) {
-//					$scope.user.artistas[i].albuns.push(Album);
-//					$scope.artistaDaVez.albuns.push(Album);
-//				}
-//			}
-//        }
-        $scope.modalAdicionarArtista = function() {
-          $('#modaldoartista').modal('open');
+        var setAlbumVez = function(Album) {
+            $scope.albumDaVez = Album;
+          }
+        
+        $scope.resetAlbumDaVez = function(){
+            $scope.albumDaVez = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
         }
 
-        $scope.modalAdicionaPlaylist = function() {
+        
+        //// Playlist ////
+        
+        $scope.resetPlaylist = function() {
+            $scope.Playlist = {nome:"", musicas: [], num_musicas_playlist:0, duracao:0}
+          }
+
+          $scope.resetPlaylistDaVez = function() {
+            $scope.playlistDaVez = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
+          }
+
+   
+
+          $scope.adicionaPlaylist = function(Playlist) {
+            if (!jahExistePlaylist(Playlist.nome)) {
+              $scope.listaPlaylists.push(Playlist);
+              $scope.resetPlaylist();
+            } else {
+              alert("A playlist " + Playlist.nome + " já existe. Crie uma playlist com outro nome.");
+            }
+          }
+
+          var jahExistePlaylist = function(NomePlaylist) {
+            var achouPlaylist = false;
+
+            for (var i = 0; i < $scope.listaPlaylists.length; i++) {
+              if($scope.listaPlaylists[i].nome_playlist == NomePlaylist) {
+                achouPlaylist = true;
+              }
+            }
+            return achouPlaylist;
+          }
+
+          $scope.excluirPlaylist = function() {
+            var click = confirm("Deseja mesmo excluir a playlist " + $scope.playlistDaVez.nome + "?");
+            if(click) {
+              $scope.excluir();
+            }
+          }
+
+          $scope.excluir = function() {
+            var click = confirm("Deseja excluir a playlist " + $scope.playlistDaVez + "?");
+            if(click) {
+            for (var i = $scope.listaPlaylists.length - 1; i> -1; i--) {
+              if($scope.listaPlaylists[i] == $scope.playlistDaVez) {
+                $scope.listaPlaylists.splice(i, 1);
+                $('#modalDetalhesPlaylist').modal('close');
+              }
+            }
+          }
+          }
+
+          $scope.addMusicaAPlaylist = function(Musica) {
+            $scope.playlistDaVez.duracao+= parseInt(Musica.duracao_musica);
+            $scope.playlistDaVez.num_musicas_playlist += 1;
+
+            $scope.playlistDaVez.musicas.push(Musica);
+            $('#modalListaMusica').modal('close');
+            $scope.musicaDaVez = {nome:"", artista:"", album:"", ano:"", duracao:""};
+          }
+
+          $scope.excluirMusica = function(Musica) {
+            var click = confirm("Deseja excluir a música " + Musica.nome_musica + " da playlist " + $scope.playlistDaVez.nome+ "?");
+            if(click) {
+              for (var i = 0; i < $scope.playlistDaVez.musicas.length; i++) {
+                if($scope.playlistDaVez.musicas[i].nome_musica == Musica.nome){
+                  $scope.playlistDaVez.musicas.splice(i, 1);
+                }
+              }
+            }
+          }
+
+          $scope.modalAdicionaPlaylist = function() {
           $('#adiciona-playlist').modal('open');
         }
 
@@ -256,12 +385,7 @@ angular.module("modulo1")
           $('#cadastro-musica').modal('open');
         }
 
-        $scope.modalDestalhesArtista = function(Artista) {
-          listarAlbunsArtista(Artista);
-          setArtistaVez(Artista);
-
-          $('#modalDestalhesArtista').modal('open');
-        }
+        
 
         $scope.modalDetalhesPlaylist = function(Playlist) {
           $scope.playlistDaVez = Playlist;
@@ -272,18 +396,7 @@ angular.module("modulo1")
           $('#add-musica-playlist').modal('open');
         }
 
-        var listarAlbunsArtista = function(Artista) {
-          $scope.listaAlbunsArtista = Artista.albuns;
-        }
-
-        var setArtistaVez = function(Artista) {
-          $scope.artistaDaVez = Artista;
-        }
-
-        var setAlbumVez = function(Album) {
-          $scope.albumDaVez = Album;
-        }
-
+       
         var setMusica = function() {
           $scope.Musica.artista = $scope.artistaDaVez.artista;
           $scope.Musica.album = $scope.albumDaVez.nome;
@@ -296,13 +409,7 @@ angular.module("modulo1")
 
 
 
-        $scope.excluirAlbuns = function(artista){
-          for (var i = 0; i < $scope.listaAlbuns.length; i++) {
-            if ($scope.listaArtista[i].artista == artista.artista) {
-              $scope.listaAlbuns.splice(i,1);
-            }
-          }
-        }
+       
 
         $scope.removeArtistaLista = function(Artista) {
           var removido = false;
@@ -315,6 +422,7 @@ angular.module("modulo1")
           }
         }
 
+        //// Musica ////
         $scope.adicionaMusica = function(Musica) {
 
           var dur = parseInt(Musica.duracao);
@@ -323,11 +431,11 @@ angular.module("modulo1")
             Materialize.toast('Alguma informação está incorreta, tente novamente!', 3000)
           } else {
             if(!$scope.existeMusica(Musica)) {
-            $scope.albumDaVez.musicas.push(Musica);
-            $scope.listaMusicas.push(Musica);
-            $('#modalDestalhesArtista').modal('close');
+	            $scope.albumDaVez.musicas.push(Musica);
+	            $scope.listaMusicas.push(Musica);
+	            $('#modalDestalhesArtista').modal('close');
           } else {
-            alert("A música " + Musica.nome + " já existe no álbum " + $scope.albumDaVez.nome);
+            Materialize.toast("A música " + Musica.nome + " já existe no álbum " + $scope.albumDaVez.nome);
           }
           }
             $scope.resetMusica();
@@ -354,7 +462,6 @@ angular.module("modulo1")
         }
 
         $scope.resetAddMusica = function() {
-          // $scope.resetArtistaDaVez();
           $scope.resetAlbumDaVez();
           $scope.resetMusica();
         }
@@ -366,110 +473,5 @@ angular.module("modulo1")
         $scope.resetArtistaDaVez = function(){
           $scope.artistaDaVez = {nome: "", imagem: "", albuns: [], ehFavorito: false, ultimaMusica:""}
         }
-        $scope.resetAlbumDaVez = function(){
-            $scope.albumDaVez = {nome:"", imagem:"", ano:"", artista:"", musicas:[]};
-        }
-
-        $scope.resetPlaylist = function() {
-          $scope.Playlist = {nome:"", musicas: [], num_musicas_playlist:0, duracao:0}
-        }
-
-        $scope.resetPlaylistDaVez = function() {
-          $scope.playlistDaVez = {nome:"", musicas: [], num_musicas_playlist:0, duracao_playlist:0}
-        }
-
-        $scope.desfavoritaArtista = function(Artista) {
-          var click = confirm("Excluir o artista " + Artista.nome + " da lista de favoritos?");
-          if(click){
-              Artista.ehFavorito = false;
-	          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
-	          .then(function(resposta) {
-	        	  console.log("Artista desfavoritado: ", resposta.data);
-	          }, function(resposta) {
-	        	  console.log("Erro ", resposta);
-	          })
-          }
-
-        }
-
-        $scope.favoritaArtista = function(Artista) {
-          Artista.ehFavorito =true;
-          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
-          .then(function(resposta) {
-        	  console.log("Artista favoritado: ", resposta.data);
-          }, function(resposta) {
-        	  console.log("Erro ", resposta);
-          })
-        }
-
-        $scope.avaliaArtista = function(Nota) {
-          $scope.artistaDaVez.nota = Nota;
-          Artista = $scope.artistaDaVez;
-          
-          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
-          .then(function(resposta) {
-        	  console.log("Artista avaliado: ", resposta.data);
-          }, function(resposta) {
-        	  console.log("Erro ", resposta);
-          })
-        }
-
-        $scope.adicionaPlaylist = function(Playlist) {
-          if (!jahExistePlaylist(Playlist.nome)) {
-            $scope.listaPlaylists.push(Playlist);
-            $scope.resetPlaylist();
-          } else {
-            alert("A playlist " + Playlist.nome + " já existe. Crie uma playlist com outro nome.");
-          }
-        }
-
-        var jahExistePlaylist = function(NomePlaylist) {
-          var achouPlaylist = false;
-
-          for (var i = 0; i < $scope.listaPlaylists.length; i++) {
-            if($scope.listaPlaylists[i].nome_playlist == NomePlaylist) {
-              achouPlaylist = true;
-            }
-          }
-          return achouPlaylist;
-        }
-
-        $scope.excluirPlaylist = function() {
-          var click = confirm("Deseja mesmo excluir a playlist " + $scope.playlistDaVez.nome + "?");
-          if(click) {
-            $scope.excluir();
-          }
-        }
-
-        $scope.excluir = function() {
-          var click = confirm("Deseja excluir a playlist " + $scope.playlistDaVez + "?");
-          if(click) {
-          for (var i = $scope.listaPlaylists.length - 1; i> -1; i--) {
-            if($scope.listaPlaylists[i] == $scope.playlistDaVez) {
-              $scope.listaPlaylists.splice(i, 1);
-              $('#modalDetalhesPlaylist').modal('close');
-            }
-          }
-        }
-        }
-
-        $scope.addMusicaAPlaylist = function(Musica) {
-          $scope.playlistDaVez.duracao+= parseInt(Musica.duracao_musica);
-          $scope.playlistDaVez.num_musicas_playlist += 1;
-
-          $scope.playlistDaVez.musicas.push(Musica);
-          $('#modalListaMusica').modal('close');
-          $scope.musicaDaVez = {nome:"", artista:"", album:"", ano:"", duracao:""};
-        }
-
-        $scope.excluirMusica = function(Musica) {
-          var click = confirm("Deseja excluir a música " + Musica.nome_musica + " da playlist " + $scope.playlistDaVez.nome+ "?");
-          if(click) {
-            for (var i = 0; i < $scope.playlistDaVez.musicas.length; i++) {
-              if($scope.playlistDaVez.musicas[i].nome_musica == Musica.nome){
-                $scope.playlistDaVez.musicas.splice(i, 1);
-              }
-            }
-          }
-        }
-  });
+       
+    });

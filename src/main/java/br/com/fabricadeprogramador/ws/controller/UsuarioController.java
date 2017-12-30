@@ -52,7 +52,8 @@ public class UsuarioController {
 		
 		Usuario usuarioCadastrado = usuarioRepository.acharPorEmail(usuario.getEmail());
 		if(usuarioCadastrado == null) {
-			throw new ServletException("Usuário não cadastrado!");
+			return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+//			throw new ServletException("Usuário não cadastrado!");
 		}
 		
 		if(!usuarioCadastrado.getSenha().equals(usuario.getSenha())) {
