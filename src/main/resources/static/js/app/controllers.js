@@ -25,7 +25,7 @@ angular.module("modulo1")
         
         
         //carrega a lista de usuarios cadastrados
-        $http({method:'GET', url:'http://localhost:8080/usuarios'})
+        $http({method:'GET', url:'https://lab3silivia.herokuapp.com/usuarios'})
           .then(function(resposta){
             $scope.usuariosCadastrados = resposta.data;
             console.log("Fez corretamente o GET", $scope.usuariosCadastrados, $scope.user);
@@ -36,13 +36,13 @@ angular.module("modulo1")
           });
 
         $scope.fazerLogin = function(Usuario) {
-			$http.post("http://localhost:8080/autenticar", Usuario)
+			$http.post("https://lab3silivia.herokuapp.com/autenticar", Usuario)
 			.then(function (resposta){
 				console.log("Logou corretamente" + resposta);
 				Usuario.id = resposta.data.id;
 				Usuario.artistas = resposta.data.artistas;
 				localStorage.setItem("userInfo", JSON.stringify(resposta.data));
-				window.location.href = "http://localhost:8080/index";
+				window.location.href = "https://lab3silivia.herokuapp.com/index";
 				
 				
 			}, function(resposta){
@@ -53,11 +53,11 @@ angular.module("modulo1")
 
           $scope.registrar = function(Usuario) {
             if(naoExisteUsuario(Usuario)){
-				$http.post("http://localhost:8080/usuarios", Usuario)
+				$http.post("https://lab3silivia.herokuapp.com/usuarios", Usuario)
 				.then(function (resposta){
 					console.log("Registrou" + resposta);
 					alert("Registro feito com sucesso! Use seu email e senha para logar!");
-					window.location.href = "http://localhost:8080/login";
+					window.location.href = "https://lab3silivia.herokuapp.com/login";
 					
 					
 				}, function(resposta){
@@ -85,7 +85,7 @@ angular.module("modulo1")
         $scope.setUltimaMusicaOuvida = function(Musica) {
         	var artista = $scope.artistaDaVez;
         	artista.ultimaMusica = Musica.nome;
-        	$http.post("http://localhost:8080/usuarios/" + $user.id + "/artistas", artista)
+        	$http.post("https://lab3silivia.herokuapp.com/usuarios/" + $user.id + "/artistas", artista)
         	.then(function(resposta) {
         		console.log("Ultima musica do artista escutada adicionada com sucesso", resposta);
         	}, function(resposta) {
@@ -101,7 +101,7 @@ angular.module("modulo1")
         		if(!existeArtista(Artista.nome, $scope.user.artistas)) {
 				
 						
-						$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+						$http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id + "/artistas", Artista)
 						.then(function (resposta){
 							console.log("Cadastrou o artista com sucesso " + resposta);
 							Artista.id = resposta.data.id;
@@ -149,7 +149,7 @@ angular.module("modulo1")
             var click = confirm("Excluir o artista " + Artista.nome + " da lista de favoritos?");
             if(click){
                 Artista.ehFavorito = false;
-  	          $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+  	          $http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id + "/artistas", Artista)
   	          .then(function(resposta) {
   	        	  console.log("Artista desfavoritado: ", resposta.data);
   	          }, function(resposta) {
@@ -161,7 +161,7 @@ angular.module("modulo1")
 
           $scope.favoritaArtista = function(Artista) {
             Artista.ehFavorito =true;
-            $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+            $http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id + "/artistas", Artista)
             .then(function(resposta) {
           	  console.log("Artista favoritado: ", resposta.data);
             }, function(resposta) {
@@ -173,7 +173,7 @@ angular.module("modulo1")
             $scope.artistaDaVez.nota = Nota;
             Artista = $scope.artistaDaVez;
             
-            $http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas", Artista)
+            $http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id + "/artistas", Artista)
             .then(function(resposta) {
           	  console.log("Artista avaliado: ", resposta.data);
             }, function(resposta) {
@@ -252,7 +252,7 @@ angular.module("modulo1")
         		Materialize.toast("Álbum já cadastrado", 3000);
         	}
         	if(!invalido){
-				$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/artistas/" + $scope.artistaDaVez.id + "/albuns", Album)
+				$http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id + "/artistas/" + $scope.artistaDaVez.id + "/albuns", Album)
 				.then(function (resposta){
 					console.log("Sucesso " + resposta);
 					Album.id = resposta.data.id;
@@ -325,7 +325,7 @@ angular.module("modulo1")
         	} else {
 	            if (!jahExistePlaylist(Playlist.nome)) {
 	            	console.log(Playlist);
-	            	$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/playlists", Playlist)
+	            	$http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id + "/playlists", Playlist)
 	            	.then(function(resposta){
 	            		console.log("Playlist cadastrada com sucesso, ", resposta);
 	            		Playlist.id = resposta.data.id;
@@ -355,7 +355,7 @@ angular.module("modulo1")
           $scope.removerPlaylist = function(Playlist) {
             var click = confirm("Deseja mesmo excluir a playlist " + Playlist.nome + "?");
             if(click) {
-            	$http.post("http://localhost:8080/usuarios/" + $scope.user.id+ "/playlists/" + Playlist.id + "/remover", Playlist)
+            	$http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id+ "/playlists/" + Playlist.id + "/remover", Playlist)
             	  .then(function(resposta) {
             		  console.log("Playlist deletada");
             		for (var i = $scope.user.playlists.length - 1; i> -1; i--) {
@@ -376,7 +376,7 @@ angular.module("modulo1")
 //        	  console.log($scope.playlistDaVez);
 //        	  var playlist = $scope.playlistDaVez;
 //        	  playlist.musicas.push(Musica);
-        	  $http.post("http://localhost:8080/usuarios/" + $scope.user.id+ "/playlists/" + $scope.playlistDaVez.id + "/musicas", Musica)
+        	  $http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id+ "/playlists/" + $scope.playlistDaVez.id + "/musicas", Musica)
         	  .then(function(resposta) {
         		  console.log("Musica adicionada na playlist");
         		  $scope.playlistDaVez.musicas.push(Musica);
@@ -392,7 +392,7 @@ angular.module("modulo1")
             var click = confirm("Deseja excluir a música " + Musica.nome + " da playlist " + $scope.playlistDaVez.nome+ "?");
             if(click) {
             	
-				$http.post("http://localhost:8080/usuarios/" + $scope.user.id + "/playlists/" + $scope.playlistDaVez.id + "/removermusicaplaylist", Musica)
+				$http.post("https://lab3silivia.herokuapp.com/usuarios/" + $scope.user.id + "/playlists/" + $scope.playlistDaVez.id + "/removermusicaplaylist", Musica)
 				.then(function (resposta){
 					console.log("Deletou a musica com sucesso " + resposta);
 			         for (var i = 0; i < $scope.playlistDaVez.musicas.length; i++) {
@@ -492,7 +492,7 @@ angular.module("modulo1")
                 	Materialize.toast('A Musica já existe no album!', 3000);
                 
         		} else {
-        			$http.post("http://localhost:8080/usuarios/"+$scope.user.id+"/artistas/"+$scope.artistaDaVez.id+"/albuns/"+$scope.albumDaVez.id+"/musica", Musica)
+        			$http.post("https://lab3silivia.herokuapp.com/usuarios/"+$scope.user.id+"/artistas/"+$scope.artistaDaVez.id+"/albuns/"+$scope.albumDaVez.id+"/musica", Musica)
         			.then(function (resposta){
         				console.log("Cadastrou a musica com sucesso " + resposta);
 						Musica.id = resposta.data.id;
